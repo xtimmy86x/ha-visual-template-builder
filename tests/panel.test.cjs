@@ -17,7 +17,20 @@ if (screenshotDir) fs.mkdirSync(screenshotDir, {recursive:true});
       calls.push(message);
       if(message.action==='metadata')return {number:['power','energy'],binary:['running','problem']};
       if(message.action==='list')return {sensors:defs,revision:rev};
-      if(message.action==='preview')return {value:1.2,error:null,sources:['sensor.power']};
+      if(message.action==='preview') {
+        const evaluate = node => {
+          if(node.op==='value') return node.value;
+          if(node.op==='entity') { const state=panel.hass.states[node.entity_id]; if(!state || ['unknown','unavailable'].includes(state.state)) throw Error('Source unavailable'); return state.state; }
+          if(node.op==='if') return evaluate(node.args[0]) ? evaluate(node.args[1]) : evaluate(node.args[2]);
+          const values=node.args.map(evaluate);
+          if(node.op==='eq') return values[0]===values[1];
+          if(node.op==='divide') return Number(values[0])/Number(values[1]);
+          if(node.op==='add') return values.reduce((a,b)=>Number(a)+Number(b),0);
+          return null;
+        };
+        try{return {value:evaluate(message.definition.expression),error:null,sources:message.definition.kind==='text'?['cover.cover_71_2']:['sensor.power']};}
+        catch(error){return {value:null,error:error.message,sources:[]};}
+      }
       if(message.action==='save'){
         const d=structuredClone(message.definition);d.id=d.id||'a'.repeat(32);d.entity_id='sensor.visual_power';
         defs=[d];return {sensors:defs,revision:++rev};
@@ -55,7 +68,69 @@ if (screenshotDir) fs.mkdirSync(screenshotDir, {recursive:true});
   await page.getByRole('button',{name:'Annulla',exact:true}).click();
   await page.getByRole('button',{name:'Elimina',exact:true}).click();
   await page.getByText('Il tuo primo sensore visuale',{exact:true}).waitFor();
+  // State-to-text is the default for new text sensors: no nested operations.
+  await page.evaluate(() => {
+    const panel=document.querySelector('visual-template-builder-panel');
+    panel.hass={...panel.hass, states:{...panel.hass.states,'cover.cover_71_2':{state:'closed',attributes:{friendly_name:'Cover 71'}}}};
+  });
+  await page.setViewportSize({width:390,height:844});
+  await page.getByRole('button',{name:'Crea sensore',exact:true}).click();
+  await page.getByLabel('Nome',{exact:true}).fill('Stato tapparella');
+  await page.getByLabel('Risultato',{exact:true}).selectOption('text');
+  assert.equal(await page.getByLabel('Operazione',{exact:true}).count(),0);
+  await page.getByLabel('Quale entità vuoi descrivere?',{exact:true}).fill('cover.cover_71_2');
+  await page.getByLabel('Quale entità vuoi descrivere?',{exact:true}).press('Tab');
+  assert.equal(await page.locator('.mapping-row').count(),4);
+  await page.getByLabel('Mostra questo testo 1',{exact:true}).fill('Tapparella chiusa');
+  await page.waitForFunction(()=>document.querySelector('visual-template-builder-panel').shadowRoot.querySelector('.result')?.textContent==='Tapparella chiusa');
+  // Live source changes update preview without losing unsaved text.
+  await page.evaluate(() => {
+    const panel=document.querySelector('visual-template-builder-panel');
+    panel.hass={...panel.hass,states:{...panel.hass.states,'cover.cover_71_2':{state:'opening',attributes:{friendly_name:'Cover 71'}}}};
+  });
+  await page.waitForFunction(()=>document.querySelector('visual-template-builder-panel').shadowRoot.querySelector('.result')?.textContent==='In apertura');
+  assert.equal(await page.getByLabel('Mostra questo testo 1',{exact:true}).inputValue(),'Tapparella chiusa');
+  assert.equal(await page.locator('.mapping-row.active').count(),1);
+  assert.equal(await page.evaluate(()=>document.querySelector('visual-template-builder-panel').shadowRoot.querySelector('main').scrollWidth<=390),true);
+  if(screenshotDir) {
+    await page.evaluate(()=>document.querySelector('visual-template-builder-panel').scrollTo(0,0));
+    await page.screenshot({path:`${screenshotDir}/mapping-mobile.png`,fullPage:true});
+    await page.setViewportSize({width:1440,height:1100});
+    await page.screenshot({path:`${screenshotDir}/mapping-desktop.png`,fullPage:true});
+  }
+  // Switching views preserves the expression exactly, with no migration metadata.
+  const before = await page.evaluate(()=>structuredClone(document.querySelector('visual-template-builder-panel').draft.expression));
+  await page.getByRole('button',{name:'Editor avanzato',exact:true}).click();
+  await page.getByRole('button',{name:'Stato → testo',exact:true}).click();
+  assert.deepEqual(await page.evaluate(()=>document.querySelector('visual-template-builder-panel').draft.expression),before);
+  await page.getByLabel('Quando lo stato è 2',{exact:true}).selectOption('closed');
+  await page.getByRole('button',{name:'Salva sensore',exact:true}).click();
+  await page.getByRole('status').getByText('Ogni stato può comparire una sola volta.',{exact:false}).waitFor();
+  await page.getByLabel('Quando lo stato è 2',{exact:true}).selectOption('open');
+  await page.getByRole('button',{name:'Salva sensore',exact:true}).click();
+  await page.getByRole('button',{name:'Modifica',exact:true}).click();
+  assert.equal(await page.locator('.mapping-row').count(),4);
+  assert.equal(await page.getByLabel('Mostra questo testo 1',{exact:true}).inputValue(),'Tapparella chiusa');
+  await page.getByRole('button',{name:'Annulla',exact:true}).click();
+  // Existing 0.1.0 rules (including the user's closed/otherwise example) reopen simply.
+  await page.evaluate(()=> {
+    const panel=document.querySelector('visual-template-builder-panel');
+    const original={op:'if',args:[{op:'eq',args:[{op:'entity',entity_id:'cover.cover_71_2',attribute:''},{op:'value',value:'closed'}]},{op:'value',value:'chiuso'},{op:'value',value:'aperto'}]};
+    panel.start({...defs[0],expression:original});
+    window.originalExpression=original;
+  });
+  assert.equal(await page.locator('.mapping-row').count(),1);
+  assert.equal(await page.getByLabel('Per gli altri stati',{exact:true}).inputValue(),'aperto');
+  await page.getByRole('button',{name:'Salva sensore',exact:true}).click();
+  assert.deepEqual(await page.evaluate(()=>calls.filter(c=>c.action==='save').at(-1).definition.expression),await page.evaluate(()=>originalExpression));
+  // Complex existing text rules must stay in advanced mode, unchanged.
+  await page.evaluate(()=> {
+    const panel=document.querySelector('visual-template-builder-panel');
+    panel.start({...defs[0],expression:{op:'concat',args:[{op:'value',value:'Potenza: '},{op:'entity',entity_id:'sensor.power'}]}});
+  });
+  assert.equal(await page.getByRole('button',{name:'Stato → testo',exact:true}).isDisabled(),true);
+  assert.equal(await page.getByLabel('Operazione',{exact:true}).first().inputValue(),'concat');
   assert.deepEqual(errors,[]);
-  console.log('Panel checks passed: mobile layout, compose, preview, save, edit, duplicate, delete.');
+  console.log('Panel checks passed: calculations, state mapping, live updates, view switching, duplicate-state validation, persistence and legacy rules.');
   await browser.close();
 })().catch(error=>{console.error(error);process.exit(1)});
