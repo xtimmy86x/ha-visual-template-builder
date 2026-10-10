@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.3.0
+
+- Redesigned the general expression editor for calculations, comparisons, conditions, counts and text composition.
+- Replaced nested generic node boxes with compact contextual value controls, inline comparisons and Se / Mostra / Altrimenti sections.
+- Added a live natural-language rule summary using entity names.
+- Group related conditions with explicit all/any choices; retain compatible operands when changing operations.
+- Hide optional attribute inputs until needed and keep existing attribute-based rules editable.
+- Renamed the general text view to Regole e calcoli (Rules and calculations); the state-to-text shortcut remains available.
+- Preserve existing expression trees and saved sensor behavior when opening the new editor.
+
 ## 0.2.0
 
 - Added a guided **State → text** editor: select one entity, then edit a flat state/text table.

@@ -2,7 +2,7 @@
 
 Build Home Assistant sensors visually, without writing YAML or Jinja.
 
-**Version 0.2.0 — experimental release.** A custom integration with a sidebar editor for numeric, text and binary sensors. Runs entirely inside Home Assistant; no external service, cloud account, Node-RED or add-on is required.
+**Version 0.3.0 — experimental release.** A custom integration with a sidebar editor for numeric, text and binary sensors. Runs entirely inside Home Assistant; no external service, cloud account, Node-RED or add-on is required.
 
 ## Installazione (Italiano)
 
@@ -23,6 +23,22 @@ Per aggiornamenti successivi, aggiorna da HACS e riavvia Home Assistant. Se il p
 - Controlla l'anteprima. In **Proprietà e disponibilità**, imposta unità, icona, classi e comportamento quando il calcolo fallisce.
 - Salva: l'entità viene aggiunta subito. Le modifiche alle regole non ricaricano l'integrazione.
 
+### Editor generale: regole leggibili
+
+L’editor generale ora propone controlli adatti al risultato scelto:
+
+- **Calcoli:** scegli l’operazione, le entità e i numeri, con i segni matematici tra i valori.
+- **Confronti:** una riga con valore di sinistra, confronto e valore di destra.
+- **Condizioni:** componi frasi **Se… Mostra… Altrimenti mostra…**, anche con calcoli nei risultati.
+- **Più condizioni:** scegli se devono essere vere tutte oppure almeno una, e aggiungi righe.
+- **Testi e conteggi:** aggiungi solo i valori o le condizioni che ti servono.
+
+Il selettore **Usa** cambia la sorgente di un valore (entità, numero, testo, ecc.). Il menu **⋯** cambia il tipo delle regole composte. Gli attributi sono raccolti in **Usa un attributo**. **La regola in parole** riassume la logica con i nomi delle entità mentre la modifichi.
+
+Le configurazioni precedenti vengono lette senza modificare le espressioni salvate. Il motore di calcolo e la gestione della disponibilità restano gli stessi.
+
+![Editor generale con regola condizionale](docs/general-editor.png)
+
 ### Associare lo stato di un’entità a un testo
 
 ![Esempio del nuovo editor Stato → testo](docs/state-to-text.png)
@@ -35,7 +51,7 @@ Scegli **Risultato → Testo**. La modalità **Stato → testo** si apre automat
 
 Le tapparelle propongono i quattro stati distinti; interruttori e sensori binari propongono acceso/spento. Per entità con opzioni vengono proposte le opzioni disponibili. Puoi aggiungere stati personalizzati, fino a 10 righe. Il testo per gli altri stati **non sostituisce** la gestione di `unknown`/`unavailable`, configurabile in **Proprietà e disponibilità**.
 
-Le regole semplici già create nella 0.1.0 si aprono nella tabella mantenendo esattamente testi e caso “Altrimenti”. Le logiche più complesse restano nell’**Editor avanzato**. Il cambio di vista non modifica la regola salvata.
+Le regole semplici già create nella 0.1.0 si aprono nella tabella mantenendo esattamente testi e caso “Altrimenti”. Le logiche più complesse restano nella vista **Regole e calcoli**. Il cambio di vista non modifica la regola salvata.
 
 Esempi:
 
@@ -54,7 +70,7 @@ Esempi:
 ## Features
 
 - Numeric, text and binary entities with stable unique IDs.
-- Guided **State → text** table with automatic state suggestions, existing-rule recognition and lossless switching to the advanced editor.
+- Guided **State → text** table with automatic state suggestions, existing-rule recognition and lossless switching to the general editor.
 - Nested arithmetic: sum, subtraction, multiplication, division, mean, minimum, maximum, rounding, absolute value.
 - Text equality/inequality; numeric greater/less comparisons and equality with tolerance.
 - AND, OR, NOT and conditional branches; conditions short-circuit and only the selected branch is evaluated.
@@ -101,7 +117,7 @@ The visual editor stores a structured expression tree, evaluated locally by the 
 - Sources must exist as HA states or registered entities when first selected. Existing unavailable sources are supported. HA source-ID renames are not automatically rewritten in rules: update them in the editor.
 - Visual-sensor dependencies are supported; direct/indirect cycles within this integration are rejected. External automations can still create feedback loops outside this integration's dependency graph.
 - The editor runs on explicit entity selections; it does not yet support dynamic area/label selection.
-- JSON **export** is included. Import, Jinja/YAML export, trigger-based sensors, delays/hysteresis and a per-condition truth inspector are planned, not implemented in 0.2.0.
+- JSON **export** is included. Import, Jinja/YAML export, trigger-based sensors, delays/hysteresis and a per-condition truth inspector are planned, not implemented in 0.3.0.
 - Deleting a sensor removes its definition and HA entity registry entry. Removing the integration removes its saved definitions; use HA backups to preserve configuration.
 
 ## Development

@@ -26,6 +26,12 @@ if (screenshotDir) fs.mkdirSync(screenshotDir, {recursive:true});
           if(node.op==='eq') return values[0]===values[1];
           if(node.op==='divide') return Number(values[0])/Number(values[1]);
           if(node.op==='add') return values.reduce((a,b)=>Number(a)+Number(b),0);
+          if(node.op==='gt') return Number(values[0])>Number(values[1]);
+          if(node.op==='and') return values.every(Boolean);
+          if(node.op==='or') return values.some(Boolean);
+          if(node.op==='not') return !values[0];
+          if(node.op==='concat') return values.join('');
+          if(node.op==='round') return Number(Number(values[0]).toFixed(Number(values[1])));
           return null;
         };
         try{return {value:evaluate(message.definition.expression),error:null,sources:message.definition.kind==='text'?['cover.cover_71_2']:['sensor.power']};}
@@ -42,9 +48,8 @@ if (screenshotDir) fs.mkdirSync(screenshotDir, {recursive:true});
   await page.getByLabel('Nome',{exact:true}).fill('Consumo netto');
   // Compose division: entity / numeric constant.
   await page.getByLabel('Operazione',{exact:true}).first().selectOption('divide');
-  await page.getByLabel('Operazione',{exact:true}).nth(1).selectOption('entity');
   await page.getByLabel('Entità',{exact:true}).fill('sensor.power');
-  await page.getByLabel('Valore fisso',{exact:true}).fill('1000');
+  await page.getByLabel('Valore',{exact:true}).fill('1000');
   await page.getByText('Proprietà e disponibilità',{exact:true}).click();
   await page.getByLabel('Unità di misura',{exact:true}).fill('kW');
   await page.getByLabel('Classe dispositivo',{exact:true}).selectOption('power');
@@ -100,7 +105,7 @@ if (screenshotDir) fs.mkdirSync(screenshotDir, {recursive:true});
   }
   // Switching views preserves the expression exactly, with no migration metadata.
   const before = await page.evaluate(()=>structuredClone(document.querySelector('visual-template-builder-panel').draft.expression));
-  await page.getByRole('button',{name:'Editor avanzato',exact:true}).click();
+  await page.getByRole('button',{name:'Regole e calcoli',exact:true}).click();
   await page.getByRole('button',{name:'Stato → testo',exact:true}).click();
   assert.deepEqual(await page.evaluate(()=>document.querySelector('visual-template-builder-panel').draft.expression),before);
   await page.getByLabel('Quando lo stato è 2',{exact:true}).selectOption('closed');
@@ -129,8 +134,74 @@ if (screenshotDir) fs.mkdirSync(screenshotDir, {recursive:true});
     panel.start({...defs[0],expression:{op:'concat',args:[{op:'value',value:'Potenza: '},{op:'entity',entity_id:'sensor.power'}]}});
   });
   assert.equal(await page.getByRole('button',{name:'Stato → testo',exact:true}).isDisabled(),true);
-  assert.equal(await page.getByLabel('Operazione',{exact:true}).first().inputValue(),'concat');
+  assert.equal(await page.getByLabel('Cosa vuoi ottenere?',{exact:true}).inputValue(),'concat');
+  // General editor: compact conditional rule, summary and editable literal values.
+  await page.evaluate(()=> {
+    const panel=document.querySelector('visual-template-builder-panel');
+    panel.start({...defs[0], expression:structuredClone(originalExpression)});
+  });
+  await page.getByRole('button',{name:'Regole e calcoli',exact:true}).click();
+  assert.equal(await page.locator('.node').count(),0,'Old nested node boxes must not be rendered');
+  assert.equal(await page.locator('.comparison-line').count(),1);
+  assert.equal(await page.getByLabel('Confronto',{exact:true}).inputValue(),'eq');
+  await page.getByLabel('Valore',{exact:true}).nth(1).fill('Tapparella chiusa');
+  await page.getByLabel('Valore',{exact:true}).nth(2).fill('Tapparella aperta');
+  await page.getByText('La regola in parole',{exact:true}).waitFor();
+  assert.match(await page.locator('.rule-summary-text').textContent(),/Tapparella chiusa/);
+  // Capture a complete general editor, not the state mapping shortcut.
+  await page.setViewportSize({width:1440,height:1100});
+  await page.waitForFunction(()=>document.querySelector('visual-template-builder-panel').shadowRoot.querySelector('.result')?.textContent==='Tapparella aperta');
+  if(screenshotDir) {
+    await page.evaluate(()=>document.querySelector('visual-template-builder-panel').scrollTo(0,0));
+    await page.screenshot({path:`${screenshotDir}/general-desktop.png`,fullPage:true});
+  }
+  await page.setViewportSize({width:390,height:844});
+  assert.equal(await page.evaluate(()=>document.querySelector('visual-template-builder-panel').shadowRoot.querySelector('main').scrollWidth<=390),true);
+  if(screenshotDir) await page.screenshot({path:`${screenshotDir}/general-mobile.png`,fullPage:true});
+  await page.getByRole('button',{name:'Salva sensore',exact:true}).click();
+  assert.equal(await page.evaluate(()=>defs[0].expression.args[1].value),'Tapparella chiusa');
+  // Build a numeric comparison through the new controls, then combine it with another.
+  await page.evaluate(()=> {
+    const panel=document.querySelector('visual-template-builder-panel');
+    panel.start();
+    panel.hass={...panel.hass,states:{...panel.hass.states,'switch.enabled':{state:'on',attributes:{friendly_name:'Macchina abilitata'}}}};
+  });
+  await page.getByLabel('Nome',{exact:true}).fill('In produzione');
+  await page.getByLabel('Risultato',{exact:true}).selectOption('binary');
+  await page.getByLabel('Entità',{exact:true}).fill('sensor.power');
+  await page.getByLabel('Entità',{exact:true}).press('Tab');
+  await page.getByLabel('Confronto',{exact:true}).selectOption('gt');
+  await page.getByLabel('Usa',{exact:true}).nth(1).selectOption('number');
+  await page.getByLabel('Valore',{exact:true}).fill('100');
+  const comparison = await page.evaluate(()=>structuredClone(document.querySelector('visual-template-builder-panel').draft.expression));
+  await page.getByLabel('Cosa vuoi ottenere?',{exact:true}).selectOption('group');
+  assert.deepEqual(await page.evaluate(()=>document.querySelector('visual-template-builder-panel').draft.expression.args[0]),comparison);
+  await page.getByRole('button',{name:'+ Aggiungi condizione',exact:true}).click();
+  await page.getByLabel('Entità',{exact:true}).nth(1).fill('switch.enabled');
+  await page.getByLabel('Entità',{exact:true}).nth(1).press('Tab');
+  await page.waitForFunction(()=>document.querySelector('visual-template-builder-panel').shadowRoot.querySelector('.result')?.textContent==='ON');
+  assert.match(await page.locator('.rule-summary-text').textContent(),/Potenza casa.*100.*e.*Macchina abilitata/);
+  if(screenshotDir) {
+    await page.setViewportSize({width:1440,height:1100});
+    await page.evaluate(()=>document.querySelector('visual-template-builder-panel').scrollTo(0,0));
+    await page.screenshot({path:`${screenshotDir}/conditions-desktop.png`,fullPage:true});
+  }
+  await page.getByRole('button',{name:'Salva sensore',exact:true}).click();
+  assert.equal(await page.evaluate(()=>defs[0].expression.op),'and');
+  assert.equal(await page.evaluate(()=>defs[0].expression.args.length),2);
+  // Attribute controls retain existing values; reopening must not rewrite expressions.
+  await page.evaluate(()=> {
+    const panel=document.querySelector('visual-template-builder-panel');
+    panel.start({...defs[0],kind:'number',expression:{op:'round',args:[{op:'entity',entity_id:'sensor.power',attribute:'watts'},{op:'value',value:2}]}});
+    window.attributeExpression=structuredClone(panel.draft.expression);
+  });
+  assert.equal(await page.getByLabel('Attributo (vuoto = stato)',{exact:true}).inputValue(),'watts');
+  await page.getByLabel('Operazione',{exact:true}).selectOption('divide');
+  assert.equal(await page.getByLabel('Attributo (vuoto = stato)',{exact:true}).inputValue(),'watts');
+  assert.equal(await page.getByLabel('Valore',{exact:true}).inputValue(),'2');
+  await page.getByLabel('Operazione',{exact:true}).selectOption('round');
+  assert.deepEqual(await page.evaluate(()=>document.querySelector('visual-template-builder-panel').draft.expression),await page.evaluate(()=>attributeExpression));
   assert.deepEqual(errors,[]);
-  console.log('Panel checks passed: calculations, state mapping, live updates, view switching, duplicate-state validation, persistence and legacy rules.');
+  console.log('Panel checks passed: general expressions, conditions, summaries, attributes, state mappings, mobile layout and legacy preservation.');
   await browser.close();
 })().catch(error=>{console.error(error);process.exit(1)});
