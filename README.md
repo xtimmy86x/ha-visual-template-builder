@@ -2,7 +2,7 @@
 
 Build Home Assistant sensors visually, without writing YAML or Jinja.
 
-**Version 0.1.0 — first experimental release.** A custom integration with a sidebar editor for numeric, text and binary sensors. Runs entirely inside Home Assistant; no external service, cloud account, Node-RED or add-on is required.
+**Version 0.2.0 — experimental release.** A custom integration with a sidebar editor for numeric, text and binary sensors. Runs entirely inside Home Assistant; no external service, cloud account, Node-RED or add-on is required.
 
 ## Installazione (Italiano)
 
@@ -23,6 +23,20 @@ Per aggiornamenti successivi, aggiorna da HACS e riavvia Home Assistant. Se il p
 - Controlla l'anteprima. In **Proprietà e disponibilità**, imposta unità, icona, classi e comportamento quando il calcolo fallisce.
 - Salva: l'entità viene aggiunta subito. Le modifiche alle regole non ricaricano l'integrazione.
 
+### Associare lo stato di un’entità a un testo
+
+![Esempio del nuovo editor Stato → testo](docs/state-to-text.png)
+
+Scegli **Risultato → Testo**. La modalità **Stato → testo** si apre automaticamente:
+
+1. Seleziona l’entità, ad esempio una tapparella.
+2. Modifica il testo accanto a ciascuno stato: **Chiuso → Tapparella chiusa**, **Aperto → Tapparella aperta**, **In apertura → Si sta aprendo**, **In chiusura → Si sta chiudendo**.
+3. Imposta il testo per eventuali altri stati e salva.
+
+Le tapparelle propongono i quattro stati distinti; interruttori e sensori binari propongono acceso/spento. Per entità con opzioni vengono proposte le opzioni disponibili. Puoi aggiungere stati personalizzati, fino a 10 righe. Il testo per gli altri stati **non sostituisce** la gestione di `unknown`/`unavailable`, configurabile in **Proprietà e disponibilità**.
+
+Le regole semplici già create nella 0.1.0 si aprono nella tabella mantenendo esattamente testi e caso “Altrimenti”. Le logiche più complesse restano nell’**Editor avanzato**. Il cambio di vista non modifica la regola salvata.
+
 Esempi:
 
 | Obiettivo | Regola visuale |
@@ -40,6 +54,7 @@ Esempi:
 ## Features
 
 - Numeric, text and binary entities with stable unique IDs.
+- Guided **State → text** table with automatic state suggestions, existing-rule recognition and lossless switching to the advanced editor.
 - Nested arithmetic: sum, subtraction, multiplication, division, mean, minimum, maximum, rounding, absolute value.
 - Text equality/inequality; numeric greater/less comparisons and equality with tolerance.
 - AND, OR, NOT and conditional branches; conditions short-circuit and only the selected branch is evaluated.
@@ -86,7 +101,7 @@ The visual editor stores a structured expression tree, evaluated locally by the 
 - Sources must exist as HA states or registered entities when first selected. Existing unavailable sources are supported. HA source-ID renames are not automatically rewritten in rules: update them in the editor.
 - Visual-sensor dependencies are supported; direct/indirect cycles within this integration are rejected. External automations can still create feedback loops outside this integration's dependency graph.
 - The editor runs on explicit entity selections; it does not yet support dynamic area/label selection.
-- JSON **export** is included. Import, Jinja/YAML export, trigger-based sensors, delays/hysteresis and a per-condition truth inspector are planned, not implemented in 0.1.0.
+- JSON **export** is included. Import, Jinja/YAML export, trigger-based sensors, delays/hysteresis and a per-condition truth inspector are planned, not implemented in 0.2.0.
 - Deleting a sensor removes its definition and HA entity registry entry. Removing the integration removes its saved definitions; use HA backups to preserve configuration.
 
 ## Development
