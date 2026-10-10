@@ -1,0 +1,11 @@
+{
+  "name": "ha-visual-template-builder",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "test:panel": "node tests/panel.test.cjs"
+  },
+  "devDependencies": {
+    "playwright": "1.51.1"
+  }
+}

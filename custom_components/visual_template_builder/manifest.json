@@ -1,0 +1,13 @@
+{
+  "domain": "visual_template_builder",
+  "name": "Visual Template Builder",
+  "codeowners": ["@xtimmy86x"],
+  "config_flow": true,
+  "dependencies": ["frontend", "http", "panel_custom", "websocket_api"],
+  "documentation": "https://github.com/xtimmy86x/ha-visual-template-builder",
+  "integration_type": "helper",
+  "iot_class": "calculated",
+  "issue_tracker": "https://github.com/xtimmy86x/ha-visual-template-builder/issues",
+  "requirements": [],
+  "version": "0.1.0"
+}
