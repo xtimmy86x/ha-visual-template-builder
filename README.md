@@ -13,7 +13,7 @@ Build Home Assistant sensors visually, without writing YAML or Jinja.
 4. In **Impostazioni → Dispositivi e servizi → Aggiungi integrazione**, cerca **Visual Template Builder** e conferma.
 5. Apri **Visual Template Builder** nella barra laterale con un account amministratore.
 
-Per aggiornamenti successivi, aggiorna da HACS e riavvia Home Assistant. Se il pannello resta alla versione precedente, ricarica la pagina del browser.
+Per aggiornamenti successivi, aggiorna da HACS e riavvia Home Assistant. L’indirizzo del pannello include la versione e un’impronta del file, quindi il browser scarica sempre il codice aggiornato. Se il pannello era già aperto durante l’aggiornamento, compare l’avviso **Ricarica**.
 
 ### Crea il primo sensore
 

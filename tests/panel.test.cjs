@@ -226,6 +226,13 @@ if (screenshotDir) fs.mkdirSync(screenshotDir, {recursive:true});
   assert.deepEqual(await page.evaluate(()=>document.querySelector('visual-template-builder-panel').draft.expression),{op:'divide',args:[{op:'entity',entity_id:'',attribute:''},{op:'value',value:1000}]});
   assert.equal(await page.getByLabel('Operazione',{exact:true}).inputValue(),'divide');
   assert.equal(await page.evaluate(()=>document.querySelector('visual-template-builder-panel').shadowRoot.querySelector('main').scrollWidth<=390),true);
+  // Versioning: the header shows the loaded release; a newer server version asks for a reload.
+  await page.evaluate(()=>{const panel=document.querySelector('visual-template-builder-panel');panel.dirty=false;panel.cancel();panel.panel={config:{version:'0.3.0-aaaaaaaaaa'}};});
+  assert.equal(await page.locator('.version-label').textContent(),'v0.3.0');
+  assert.equal(await page.locator('.update-notice').count(),0);
+  await page.evaluate(()=>{document.querySelector('visual-template-builder-panel').panel={config:{version:'0.3.0-bbbbbbbbbb'}};});
+  await page.getByRole('button',{name:'Ricarica',exact:true}).waitFor();
+  assert.equal(await page.locator('.version-label').getAttribute('title'),'0.3.0-aaaaaaaaaa');
   assert.deepEqual(errors,[]);
   console.log('Panel checks passed: general expressions, conditions, summaries, attributes, state mappings, mobile layout and legacy preservation.');
   await browser.close();
