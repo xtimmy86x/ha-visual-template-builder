@@ -7,6 +7,8 @@
 - Searchable entity picker with friendly names, live values and readable chips; attributes are chosen from the entity's real attributes.
 - Advanced options can copy unit and classes from the source entity; state classes have readable labels.
 - The save bar stays visible and shows the live result on mobile.
+- Nested rules are framed blocks with their own "Use" and operation fields instead of a hidden ⋯ menu; add buttons sit inside the block they extend.
+- The icon field shows a live preview while typing, offers one-click icons for the result type and flags names that are not mdi: icons.
 - The panel URL is versioned with the release and a hash of `panel.js`, so browsers never reuse a stale cached panel; open tabs show a reload notice when the server has a newer panel.
 
 ## 0.3.0

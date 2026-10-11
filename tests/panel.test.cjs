@@ -226,6 +226,25 @@ if (screenshotDir) fs.mkdirSync(screenshotDir, {recursive:true});
   assert.deepEqual(await page.evaluate(()=>document.querySelector('visual-template-builder-panel').draft.expression),{op:'divide',args:[{op:'entity',entity_id:'',attribute:''},{op:'value',value:1000}]});
   assert.equal(await page.getByLabel('Operazione',{exact:true}).inputValue(),'divide');
   assert.equal(await page.evaluate(()=>document.querySelector('visual-template-builder-panel').shadowRoot.querySelector('main').scrollWidth<=390),true);
+  // Nested calculations are framed blocks with their own type and operation, no hidden menus.
+  await page.evaluate(()=>{const panel=document.querySelector('visual-template-builder-panel');panel.dirty=false;panel.start({name:'Annidato',kind:'number',missing:'unavailable',unit:'',device_class:'',state_class:'',icon:'',expression:{op:'subtract',args:[{op:'add',args:[{op:'entity',entity_id:'sensor.power',attribute:''},{op:'value',value:5}]},{op:'value',value:1}]}});});
+  assert.equal(await page.locator('.expression.nested').count(),1);
+  assert.equal(await page.locator('.change-rule').count(),0);
+  assert.equal(await page.locator('.expression.nested').getByLabel('Operazione',{exact:true}).inputValue(),'add');
+  assert.equal(await page.locator('.expression.nested').getByLabel('Usa',{exact:true}).first().inputValue(),'math');
+  await page.locator('.expression.nested').getByRole('button',{name:'+ Aggiungi valore',exact:true}).click();
+  assert.equal(await page.evaluate(()=>document.querySelector('visual-template-builder-panel').draft.expression.args[0].args.length),3);
+  // Icon field: live preview state, quick picks and the backend's mdi: format.
+  await page.getByText('Opzioni avanzate',{exact:true}).click();
+  const iconInput=page.getByLabel('Icona',{exact:true});
+  await iconInput.fill('Flash');
+  assert.equal(await iconInput.getAttribute('aria-invalid'),'');
+  await page.locator('.icon-hint.error').waitFor();
+  await page.getByRole('button',{name:'mdi:solar-power',exact:true}).click();
+  assert.equal(await iconInput.inputValue(),'mdi:solar-power');
+  assert.equal(await iconInput.getAttribute('aria-invalid'),null);
+  assert.equal(await page.getByRole('button',{name:'mdi:solar-power',exact:true}).getAttribute('aria-pressed'),'true');
+  assert.equal(await page.evaluate(()=>document.querySelector('visual-template-builder-panel').draft.icon),'mdi:solar-power');
   // Versioning: the header shows the loaded release; a newer server version asks for a reload.
   await page.evaluate(()=>{const panel=document.querySelector('visual-template-builder-panel');panel.dirty=false;panel.cancel();panel.panel={config:{version:'0.3.0-aaaaaaaaaa'}};});
   assert.equal(await page.locator('.version-label').textContent(),'v0.3.0');

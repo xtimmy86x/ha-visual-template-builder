@@ -5,7 +5,7 @@ let loadedVersion = null;
 const TEXT = {
   it: {
     customValue: "Scrivi un altro valore…", goal: "Cosa vuoi ottenere?", inputKind: "Usa", calculation: "Un calcolo", comparison: "Un confronto", group: "Più condizioni", conditional: "Un risultato in base a una condizione", joinedText: "Un testo con più valori", inverted: "Una condizione invertita", counted: "Un conteggio",
-    fixedNumber: "Numero", fixedText: "Testo", fixedBoolean: "Sì / No", valueLabel: "Valore", compareLabel: "Confronto", changeRule: "Cambia tipo di regola", summary: "La regola in parole",
+    fixedNumber: "Numero", fixedText: "Testo", fixedBoolean: "Sì / No", valueLabel: "Valore", compareLabel: "Confronto", summary: "La regola in parole",
     show: "Mostra", elseShow: "Altrimenti mostra", yes: "Sì", no: "No", addValue: "Aggiungi valore", addCondition: "Aggiungi condizione", allConditions: "Tutte queste condizioni sono vere", anyCondition: "Almeno una di queste condizioni è vera", countHelp: "Conta quante di queste condizioni sono vere.",
     negateHelp: "La seguente condizione deve essere falsa", chooseValue: "Scegli un valore",
     eqWord: "è uguale a", neWord: "è diverso da", gtWord: "è maggiore di", gteWord: "è almeno", ltWord: "è minore di", lteWord: "è al massimo", nearWord: "è uguale entro una tolleranza a", andWord: "e", orWord: "oppure", sourcePlaceholder: "Cerca un’entità…",
@@ -42,12 +42,13 @@ const TEXT = {
     kindHelp_number: "Calcoli tra sensori, es. consumo netto in kW", kindHelp_text: "Descrivi uno stato a parole, es. “Tapparella chiusa”", kindHelp_binary: "Vero o falso, es. macchina in funzione",
     binaryShort: "Acceso / spento", examples: "Parti da un esempio:", advancedHelp: "Unità, icona, classi e cosa fare se una sorgente non è disponibile.",
     ex_convert: "Converti unità (W → kW)", ex_sum: "Somma di sensori", ex_difference: "Differenza tra sensori", ex_mean: "Media di sensori",
-    ex_threshold: "Sopra una soglia", ex_state: "Entità in uno stato", ex_all: "Tutte le condizioni vere", ex_any: "Almeno una condizione vera", result: "Risultato",
+    ex_threshold: "Sopra una soglia", ex_state: "Entità in uno stato", ex_all: "Tutte le condizioni vere", ex_any: "Almeno una condizione vera",
+    when: "Quando", iconHelp: "Scegli un’icona o scrivi il nome, es. mdi:flash. Vuoto = icona predefinita.", iconInvalid: "Il nome deve iniziare con mdi: e usare solo lettere minuscole, numeri e trattini.",
     updateAvailable: "È disponibile una nuova versione del pannello. Ricarica la pagina per usarla.", reload: "Ricarica",
   },
   en: {
     customValue: "Enter another value…", goal: "What do you want to create?", inputKind: "Use", calculation: "A calculation", comparison: "A comparison", group: "Multiple conditions", conditional: "A result based on a condition", joinedText: "Text with multiple values", inverted: "An inverted condition", counted: "A count",
-    fixedNumber: "Number", fixedText: "Text", fixedBoolean: "Yes / No", valueLabel: "Value", compareLabel: "Comparison", changeRule: "Change rule type", summary: "Your rule in words",
+    fixedNumber: "Number", fixedText: "Text", fixedBoolean: "Yes / No", valueLabel: "Value", compareLabel: "Comparison", summary: "Your rule in words",
     show: "Show", elseShow: "Otherwise show", yes: "Yes", no: "No", addValue: "Add value", addCondition: "Add condition", allConditions: "All these conditions are true", anyCondition: "At least one of these conditions is true", countHelp: "Count how many of these conditions are true.",
     negateHelp: "The following condition must be false", chooseValue: "Choose a value",
     eqWord: "equals", neWord: "does not equal", gtWord: "is greater than", gteWord: "is at least", ltWord: "is less than", lteWord: "is at most", nearWord: "is within tolerance of", andWord: "and", orWord: "or", sourcePlaceholder: "Search for an entity…",
@@ -84,7 +85,8 @@ const TEXT = {
     kindHelp_number: "Calculations between sensors, e.g. net consumption in kW", kindHelp_text: "Describe a state in words, e.g. “Shutter closed”", kindHelp_binary: "True or false, e.g. machine running",
     binaryShort: "On / off", examples: "Start from an example:", advancedHelp: "Unit, icon, classes and what to do when a source is unavailable.",
     ex_convert: "Convert units (W → kW)", ex_sum: "Sum of sensors", ex_difference: "Difference between sensors", ex_mean: "Average of sensors",
-    ex_threshold: "Above a threshold", ex_state: "Entity in a state", ex_all: "All conditions true", ex_any: "At least one condition true", result: "Result",
+    ex_threshold: "Above a threshold", ex_state: "Entity in a state", ex_all: "All conditions true", ex_any: "At least one condition true",
+    when: "When", iconHelp: "Pick an icon or type its name, e.g. mdi:flash. Empty = default icon.", iconInvalid: "The name must start with mdi: and use only lowercase letters, numbers and hyphens.",
     updateAvailable: "A new version of the panel is available. Reload the page to use it.", reload: "Reload",
   },
 };
@@ -149,6 +151,13 @@ function expressionKind(node) {
 }
 const emptyEntity = () => ({op: "entity", entity_id: "", attribute: ""});
 const simpleComparison = () => ({op: "eq", args: [emptyEntity(), constant("on")]});
+// Suggested icons per result type; any mdi: name can still be typed.
+const ICONS = {
+  number: ["mdi:flash", "mdi:lightning-bolt", "mdi:home-lightning-bolt", "mdi:solar-power", "mdi:thermometer", "mdi:water-percent", "mdi:gauge", "mdi:counter"],
+  text: ["mdi:text", "mdi:information-outline", "mdi:blinds", "mdi:door", "mdi:window-shutter", "mdi:state-machine", "mdi:message-text", "mdi:tag"],
+  binary: ["mdi:power", "mdi:check-circle", "mdi:alert", "mdi:motion-sensor", "mdi:door-open", "mdi:window-open", "mdi:washing-machine", "mdi:fire"],
+};
+const ICON_PATTERN = /^mdi:[a-z0-9-]+$/;
 // Starting points offered while creating a sensor; each is an ordinary expression.
 const EXAMPLES = {
   number: {
@@ -175,9 +184,9 @@ function element(tag, attrs = {}, ...children) {
   return node;
 }
 const CSS = `
-.rule-goal{margin-bottom:18px}.expression{min-width:0}.expression-toolbar{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:12px}.expression-toolbar>label{flex:1}.change-rule{position:relative;margin-left:auto}.change-rule>summary{font-size:20px;list-style:none;margin:0;padding:0 8px}.change-rule[open]{min-width:200px}.change-rule select{margin-top:8px}.value-control{min-width:0;background:var(--secondary-background-color,#f5f8fb);padding:10px;border-radius:9px}.value-line{display:grid;grid-template-columns:105px minmax(0,1fr);gap:8px}.value-line>select{font-size:13px;padding:8px}.value-line input{min-width:0}.attribute-line{margin-top:8px}.attribute-line label>span{font-size:12px;font-weight:500;color:var(--secondary-text-color,#64748b);margin-bottom:4px}.attribute-line select{min-height:38px;padding:7px 9px;font-size:14px}.comparison-line{display:grid;grid-template-columns:minmax(0,1fr) minmax(140px,.65fr) minmax(0,1fr);gap:10px;align-items:start}.comparison-line>.compare-operator{margin-top:10px}.comparison-line .value-line{grid-template-columns:1fr}.comparison-line .value-line>select:first-child{border:none;background:transparent;padding:0 2px;min-height:26px}.condition-section{display:grid;grid-template-columns:95px minmax(0,1fr);gap:12px;padding:16px 0;border-top:1px solid var(--divider-color,#dde3eb)}.condition-section:first-child{border-top:0}.sentence-label{font-weight:650;color:var(--accent);padding-top:14px}.rule-item{display:flex;align-items:start;gap:8px;padding:10px 0}.rule-item>.expression{flex:1;min-width:0}.rule-item>.remove-value{margin-top:10px}.math-join{display:block;font-size:20px;color:var(--accent);text-align:center}.rule-summary{margin-top:20px;padding:14px 16px;border-radius:10px;background:var(--secondary-background-color,#f5f8fb);font-size:14px;line-height:1.6;overflow-wrap:anywhere}.rule-summary p{margin:6px 0 0;color:var(--primary-text-color,#18283b)}.rule-caption{font-size:13px;color:var(--secondary-text-color,#64748b);margin-bottom:6px}.expression .expression .expression{margin-left:0}.rule-inline-option{margin-top:12px;max-width:280px}
+.rule-goal{margin-bottom:18px}.expression{min-width:0}.expression-toolbar{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:12px}.expression-toolbar>label{flex:1}.expression.nested{border:1px solid var(--divider-color,#dde3eb);border-left:4px solid var(--accent);border-radius:10px;padding:12px 14px;background:var(--card-background-color,white)}.nested>.expression-toolbar{display:grid;grid-template-columns:minmax(150px,220px) minmax(0,1fr);align-items:end;gap:10px;margin-bottom:6px}.nested>.expression-toolbar label>span{font-size:12px;font-weight:500;color:var(--secondary-text-color,#64748b);margin-bottom:4px}.nested>.expression-toolbar select{min-height:38px;padding:7px 9px;font-size:14px}.nested>.expression-toolbar .rule-caption{grid-column:1/-1;margin:0}.nested.compact>.expression-toolbar{display:flex;justify-content:flex-end;margin:-4px -4px 6px 0}.nested.compact>.expression-toolbar>select.kind-switch{width:auto;min-height:28px;padding:3px 8px;font-size:12px;border-color:transparent;background:var(--secondary-background-color,#f1f5f9);color:var(--secondary-text-color,#64748b);border-radius:14px}.expression button.more{display:block;width:100%;margin-top:6px;border-style:dashed;background:transparent;color:var(--accent);font-size:14px;min-height:36px}.value-control{min-width:0;background:var(--secondary-background-color,#f5f8fb);padding:10px;border-radius:9px}.value-line{display:grid;grid-template-columns:105px minmax(0,1fr);gap:8px}.value-line>select{font-size:13px;padding:8px}.value-line input{min-width:0}.attribute-line{margin-top:8px}.attribute-line label>span{font-size:12px;font-weight:500;color:var(--secondary-text-color,#64748b);margin-bottom:4px}.attribute-line select{min-height:38px;padding:7px 9px;font-size:14px}.comparison-line{display:grid;grid-template-columns:minmax(0,1fr) minmax(140px,.65fr) minmax(0,1fr);gap:10px;align-items:start}.comparison-line>.compare-operator{margin-top:10px}.comparison-line .value-line{grid-template-columns:1fr}.comparison-line .value-line>select:first-child{border:none;background:transparent;padding:0 2px;min-height:26px}.condition-section{display:grid;grid-template-columns:95px minmax(0,1fr);gap:12px;padding:16px 0;border-top:1px solid var(--divider-color,#dde3eb)}.condition-section:first-child{border-top:0}.sentence-label{font-weight:650;color:var(--accent);padding-top:14px}.rule-item{display:flex;align-items:start;gap:8px;padding:10px 0}.rule-item>.expression{flex:1;min-width:0}.rule-item>.remove-value{margin-top:10px}.math-join{display:block;font-size:20px;color:var(--accent);text-align:center}.rule-summary{margin-top:20px;padding:14px 16px;border-radius:10px;background:var(--secondary-background-color,#f5f8fb);font-size:14px;line-height:1.6;overflow-wrap:anywhere}.rule-summary p{margin:6px 0 0;color:var(--primary-text-color,#18283b)}.rule-caption{font-size:13px;color:var(--secondary-text-color,#64748b);margin-bottom:6px}.expression .expression .expression{margin-left:0}.rule-inline-option{margin-top:12px;max-width:280px}
 @media(max-width:1050px){.comparison-line{grid-template-columns:1fr}.comparison-line>.compare-operator{margin:0;max-width:100%}.comparison-line .value-line{grid-template-columns:105px minmax(0,1fr)}.comparison-line .value-line>select:first-child{background:var(--card-background-color,white);padding:8px;border:1px solid var(--divider-color,#cbd5e1);min-height:44px}}
-@media(max-width:600px){.value-line:has(.entity-picker){grid-template-columns:1fr}.condition-section{grid-template-columns:1fr;gap:8px}.sentence-label{padding-top:0}.value-line input{font-size:16px}.rule-item{gap:5px}.rule-goal select{font-size:14px}}
+@media(max-width:600px){.nested:not(.compact)>.expression-toolbar{grid-template-columns:1fr}.expression.nested{padding:10px}.value-line:has(.entity-picker){grid-template-columns:1fr}.condition-section{grid-template-columns:1fr;gap:8px}.sentence-label{padding-top:0}.value-line input{font-size:16px}.rule-item{gap:5px}.rule-goal select{font-size:14px}}
 
 .entity-picker{position:relative;min-width:0;container:picker/inline-size}.entity-chip{display:flex;align-items:center;gap:10px;min-height:44px;padding:6px 6px 6px 8px;border:1px solid var(--divider-color,#cbd5e1);border-radius:8px;background:var(--card-background-color,white);min-width:0}.entity-chip.unknown{border-color:var(--warning-color,#f59e0b)}.entity-icon{flex:none;display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:50%;background:var(--secondary-background-color,#edf5fb);color:var(--accent);font-weight:700;font-size:14px;--mdc-icon-size:18px}.entity-text{display:flex;flex-direction:column;flex:1;min-width:0;line-height:1.25}.entity-text strong{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.entity-text small{font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.entity-state{flex:none;max-width:40%;font-size:13px;font-weight:600;color:var(--primary-text-color,#18283b);background:var(--secondary-background-color,#f1f5f9);padding:4px 8px;border-radius:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.entity-chip .entity-change{flex:none;min-height:32px;padding:4px 10px;font-size:13px;color:var(--accent);border-color:transparent;background:transparent}.entity-options{position:absolute;z-index:5;left:0;right:0;top:calc(100% + 4px);max-height:330px;overflow:auto;background:var(--card-background-color,white);border:1px solid var(--divider-color,#cbd5e1);border-radius:10px;box-shadow:0 10px 28px rgba(15,23,42,.18);padding:4px}.entity-option{display:flex;align-items:center;gap:10px;padding:7px 8px;border-radius:7px;cursor:pointer;min-width:0}.entity-option[aria-selected="true"]{background:var(--secondary-background-color,#edf5fb)}.entity-option .entity-state{background:transparent;font-weight:500;color:var(--secondary-text-color,#64748b)}.entity-hint{margin:6px 8px;font-size:13px}.picker-field>span{display:block;font-size:13px;font-weight:600;margin:0 0 7px}@container picker (max-width:340px){.entity-chip{flex-wrap:wrap;row-gap:4px}.entity-text{flex-basis:calc(100% - 40px)}.entity-chip .entity-state{margin-left:40px;max-width:calc(100% - 120px)}.entity-chip .entity-change{margin-left:auto}}
 .copy-properties{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin:0 0 18px;padding:12px 14px;border-radius:10px;background:var(--secondary-background-color,#f5f8fb);font-size:14px}
@@ -186,7 +195,7 @@ const CSS = `
 .examples{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:0 0 20px}.examples>span{font-size:13px;color:var(--secondary-text-color,#64748b);margin-right:2px}button.chip{min-height:32px;padding:5px 12px;border-radius:16px;font-size:13px;color:var(--accent);border-color:var(--accent)}
 .rule-head{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px 16px;align-items:end}.rule-head>select{align-self:end}.rule-head .rule-caption{grid-column:1/-1;margin:0}
 .entity-settings>summary{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px;margin:0;list-style:none}.entity-settings>summary::-webkit-details-marker{display:none}.entity-settings>summary .step-title{margin:0}.entity-settings>summary{position:relative;padding-right:28px}.entity-settings>summary::after{content:"▾";position:absolute;right:0;top:2px;font-size:18px;color:var(--secondary-text-color,#64748b)}.entity-settings[open]>summary::after{content:"▴"}.entity-settings[open]>summary{margin-bottom:18px}.summary-help{font-weight:400;flex-basis:100%;padding-left:38px}
-.actions{position:sticky;bottom:0;z-index:3;align-items:center;flex-wrap:wrap;padding:12px 0;background:var(--primary-background-color,#f5f7fa);border-top:1px solid var(--divider-color,#dde3eb)}.quick-result{display:none;margin-left:auto;font-weight:600;overflow-wrap:anywhere}@media(max-width:850px){.quick-result{display:block;flex:1 1 90px;text-align:right;font-size:14px}}
+.actions{position:sticky;bottom:0;z-index:3;align-items:center;flex-wrap:wrap;padding:12px 0;background:var(--primary-background-color,#f5f7fa);border-top:1px solid var(--divider-color,#dde3eb)}.quick-result{display:none;margin-left:auto;font-weight:600;overflow-wrap:anywhere}@media(max-width:850px){.quick-result{display:block;flex:1 1 60px;text-align:right;font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}}
 @media(max-width:600px){.kind-choice{grid-template-columns:1fr}.kind-card{padding:10px}.summary-help{padding-left:0}}
 .mode-choice{display:flex;gap:8px;margin:12px 0 18px;flex-wrap:wrap}.mode-choice button[aria-pressed="true"]{background:var(--accent);color:white;border-color:var(--accent)}
 .mapping-intro{margin-top:0}.mapping-current{display:block;margin:12px 0 20px;color:var(--secondary-text-color,#64748b)}
@@ -196,7 +205,8 @@ const CSS = `
 
 :host{display:block;height:100%;overflow:auto;background:var(--primary-background-color,#f5f7fa);color:var(--primary-text-color,#18283b);font-family:var(--paper-font-body1_-_font-family,system-ui);--accent:var(--primary-color,#039be5)}
 *{box-sizing:border-box}header{display:flex;align-items:center;gap:12px;padding:16px 24px;background:var(--card-background-color,white);border-bottom:1px solid var(--divider-color,#dde3eb);position:sticky;top:0;z-index:2}header strong{font-size:18px}header small{margin-left:auto;color:var(--secondary-text-color,#64748b)}
-main{max-width:1180px;margin:auto;padding:28px 24px 60px}h1{font-size:30px;margin:0 0 8px}h2{font-size:19px;margin:0 0 18px}p{color:var(--secondary-text-color,#64748b);line-height:1.55}.toolbar,.row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.toolbar{justify-content:space-between;margin:24px 0}.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}.card,.section{background:var(--card-background-color,white);border:1px solid var(--divider-color,#dde3eb);border-radius:16px;padding:22px}.card h2{margin:12px 0 6px}.card small{overflow-wrap:anywhere}.card .value{font-size:26px;margin:22px 0}.badge{display:inline-block;padding:5px 9px;border-radius:7px;background:var(--secondary-background-color,#edf5fb);font-size:12px;color:var(--accent)}button{font:inherit;cursor:pointer;border-radius:9px;min-height:40px;border:1px solid var(--divider-color,#d7e0e9);padding:9px 14px;background:var(--card-background-color,white);color:var(--primary-text-color,#18283b)}button:hover{filter:brightness(.96)}button.primary{background:var(--accent);color:white;border-color:var(--accent)}button.danger{color:var(--error-color,#db4437)}button:disabled{opacity:.5;cursor:wait}button:focus-visible,input:focus,select:focus{outline:2px solid var(--accent);outline-offset:2px}input,select{width:100%;min-width:0;background:var(--card-background-color,white);color:var(--primary-text-color,#18283b);border:1px solid var(--divider-color,#cbd5e1);border-radius:8px;padding:11px;font:inherit;min-height:44px}label{display:block;min-width:0}label>span{display:block;font-size:13px;font-weight:600;margin:0 0 7px}.fields{display:grid;grid-template-columns:1fr 1fr;gap:16px}.editor{display:grid;grid-template-columns:minmax(0,1fr) 290px;gap:20px;align-items:start}.section{margin-bottom:16px}.preview{position:sticky;top:88px;border-top:4px solid var(--accent)}.preview .result{font-size:28px;overflow-wrap:anywhere;margin:14px 0}.preview small{display:block;overflow-wrap:anywhere}.empty{text-align:center;padding:64px 24px}.empty .symbol{font-size:50px;color:var(--accent)}.error{color:var(--error-color,#db4437);overflow-wrap:anywhere}.update-notice{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}.notice{padding:12px 16px;background:var(--card-background-color,white);border-left:4px solid var(--accent);margin-bottom:16px;border-radius:6px}.actions{display:flex;gap:10px;margin-top:20px}.muted,small{color:var(--secondary-text-color,#64748b)}summary{cursor:pointer;font-weight:600;margin-bottom:18px}.source-list{margin-top:20px;border-top:1px solid var(--divider-color,#ddd);padding-top:14px}.search{max-width:320px}.menu{padding:8px;border:0;font-size:22px}.more{margin-top:10px} @media(max-width:850px){.editor{grid-template-columns:1fr}.preview{position:static}.fields{grid-template-columns:1fr}main{padding:20px 14px 40px}header{padding:12px 14px}.section{padding:16px}h1{font-size:25px}.toolbar>div{width:100%}.search{max-width:none}}
+main{max-width:1180px;margin:auto;padding:28px 24px 60px}h1{font-size:30px;margin:0 0 8px}h2{font-size:19px;margin:0 0 18px}p{color:var(--secondary-text-color,#64748b);line-height:1.55}.toolbar,.row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.toolbar{justify-content:space-between;margin:24px 0}.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}.card,.section{background:var(--card-background-color,white);border:1px solid var(--divider-color,#dde3eb);border-radius:16px;padding:22px}.card h2{margin:12px 0 6px}.card small{overflow-wrap:anywhere}.card .value{font-size:26px;margin:22px 0}.badge{display:inline-block;padding:5px 9px;border-radius:7px;background:var(--secondary-background-color,#edf5fb);font-size:12px;color:var(--accent)}button{font:inherit;cursor:pointer;border-radius:9px;min-height:40px;border:1px solid var(--divider-color,#d7e0e9);padding:9px 14px;background:var(--card-background-color,white);color:var(--primary-text-color,#18283b)}button:hover{filter:brightness(.96)}button.primary{background:var(--accent);color:white;border-color:var(--accent)}button.danger{color:var(--error-color,#db4437)}button:disabled{opacity:.5;cursor:wait}button:focus-visible,input:focus,select:focus{outline:2px solid var(--accent);outline-offset:2px}input,select{width:100%;min-width:0;background:var(--card-background-color,white);color:var(--primary-text-color,#18283b);border:1px solid var(--divider-color,#cbd5e1);border-radius:8px;padding:11px;font:inherit;min-height:44px}label{display:block;min-width:0}label>span{display:block;font-size:13px;font-weight:600;margin:0 0 7px}.fields{display:grid;grid-template-columns:1fr 1fr;gap:16px}.editor{display:grid;grid-template-columns:minmax(0,1fr) 290px;gap:20px;align-items:start}.section{margin-bottom:16px}.preview{position:sticky;top:88px;border-top:4px solid var(--accent)}.preview .result{font-size:28px;overflow-wrap:anywhere;margin:14px 0}.preview small{display:block;overflow-wrap:anywhere}.empty{text-align:center;padding:64px 24px}.empty .symbol{font-size:50px;color:var(--accent)}.error{color:var(--error-color,#db4437);overflow-wrap:anywhere}.icon-field{grid-column:1/-1}.icon-input{display:flex;gap:10px;align-items:center}.icon-preview{flex:none;display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:10px;background:var(--secondary-background-color,#edf5fb);color:var(--accent);font-weight:700;--mdc-icon-size:26px}.icon-preview.empty{border:1px dashed var(--divider-color,#cbd5e1);background:transparent}.icon-picks{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}button.icon-pick{min-height:38px;width:42px;padding:0;display:inline-flex;align-items:center;justify-content:center;color:var(--primary-text-color,#18283b);--mdc-icon-size:22px}button.icon-pick[aria-pressed="true"]{border-color:var(--accent);color:var(--accent);box-shadow:0 0 0 1px var(--accent)}.icon-hint{display:block;margin-top:8px}.icon-hint.error{color:var(--error-color,#db4437)}input[aria-invalid]{border-color:var(--error-color,#db4437)}
+.update-notice{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}.notice{padding:12px 16px;background:var(--card-background-color,white);border-left:4px solid var(--accent);margin-bottom:16px;border-radius:6px}.actions{display:flex;gap:10px;margin-top:20px}.muted,small{color:var(--secondary-text-color,#64748b)}summary{cursor:pointer;font-weight:600;margin-bottom:18px}.source-list{margin-top:20px;border-top:1px solid var(--divider-color,#ddd);padding-top:14px}.search{max-width:320px}.menu{padding:8px;border:0;font-size:22px}.more{margin-top:10px} @media(max-width:850px){.editor{grid-template-columns:1fr}.preview{position:static}.fields{grid-template-columns:1fr}main{padding:20px 14px 40px}header{padding:12px 14px}.section{padding:16px}h1{font-size:25px}.toolbar>div{width:100%}.search{max-width:none}}
 `;
 class VisualTemplateBuilderPanel extends HTMLElement {
   constructor() {
@@ -453,7 +463,8 @@ class VisualTemplateBuilderPanel extends HTMLElement {
     const settings = element("details", {class: "section entity-settings"}, element("summary", {}, step(3, this.t("step3")), element("small", {class: "summary-help"}, this.t("advancedHelp"))));
     settings.append(element("div", {class: "copy-slot"}));
     const fields = element("div", {class: "fields"}); settings.append(fields);
-    for (const key of ["unit", "icon"]) if (key !== "unit" || d.kind === "number") fields.append(this.field(this.t(key), this.input(d[key], value => { d[key] = value; this.touch(); }, key === "icon" ? {placeholder: "mdi:function-variant"} : {placeholder: "kW", list: "vtb-units"})));
+    if (d.kind === "number") fields.append(this.field(this.t("unit"), this.input(d.unit, value => { d.unit = value; this.touch(); }, {placeholder: "kW", list: "vtb-units"})));
+    fields.append(this.iconField());
     if (d.kind !== "text") fields.append(this.field(this.t("device"), this.select(d.device_class || "", [["", this.t("none")], ...(this.metadata[d.kind] || []).map(x => [x, x])], value => { d.device_class = value; this.touch(); })));
     if (d.kind === "number") fields.append(this.field(this.t("state"), this.select(d.state_class || "", ["", "measurement", "total", "total_increasing"].map(x => [x, x ? `${this.t(`state_class_${x}`)} (${x})` : this.t("none")]), value => {d.state_class = value; this.touch();})));
     const policy = this.select(d.missing, ["unavailable", "keep", "fallback"].map(x => [x, this.t(x)]), value => {d.missing = value; if (d.fallback === undefined) d.fallback = d.kind === "binary" ? false : d.kind === "number" ? 0 : ""; this.touch(); this.render(); this.shadowRoot.querySelector(".entity-settings").open = true;});
@@ -466,8 +477,36 @@ class VisualTemplateBuilderPanel extends HTMLElement {
       element("span", {class: "quick-result", "aria-hidden": "true"})));
     this.previewBox = element("aside", {class: "section preview", "aria-live": "polite"}, element("h2", {}, this.t("preview")), element("p", {}, this.t("pending"))); layout.append(this.previewBox);
     const units = new Set(Object.values(this._hass.states).map(state => state.attributes.unit_of_measurement).filter(unit => typeof unit === "string"));
-    main.append(element("datalist", {id: "vtb-units"}, ...[...units].sort().map(unit => element("option", {value: unit}))));
+    main.append(element("datalist", {id: "vtb-units"}, ...[...units].sort().map(unit => element("option", {value: unit}))),
+      element("datalist", {id: "vtb-icons"}, ...[...new Set(Object.values(ICONS).flat())].sort().map(icon => element("option", {value: icon}))));
     this.updateMappingLive(); this.updateCopyProperties(); this.queuePreview();
+  }
+  iconElement(icon) {
+    if (!customElements.get("ha-icon")) return element("span", {class: "icon-fallback"}, icon ? "◆" : "");
+    const node = element("ha-icon", {icon}); node.icon = icon; return node;
+  }
+  // Icon name with a live preview and one-click suggestions for the result type.
+  iconField() {
+    const d = this.draft;
+    const preview = element("span", {class: "icon-preview", "aria-hidden": "true"});
+    const hint = element("small", {class: "icon-hint"});
+    const picks = element("div", {class: "icon-picks"});
+    const input = this.input(d.icon, value => { d.icon = value.trim(); this.touch(); paint(); }, {placeholder: "mdi:flash", list: "vtb-icons", spellcheck: "false", autocomplete: "off", "aria-label": this.t("icon")});
+    const paint = () => {
+      const valid = !d.icon || ICON_PATTERN.test(d.icon);
+      preview.classList.toggle("empty", !d.icon);
+      preview.replaceChildren(valid && d.icon ? this.iconElement(d.icon) : element("span", {}, d.icon ? "?" : ""));
+      input.toggleAttribute("aria-invalid", !valid);
+      hint.textContent = this.t(valid ? "iconHelp" : "iconInvalid"); hint.classList.toggle("error", !valid);
+      for (const pick of picks.children) pick.setAttribute("aria-pressed", String(pick.dataset.icon === d.icon));
+    };
+    for (const icon of ICONS[d.kind] || ICONS.number) {
+      const pick = this.button(this.iconElement(icon), () => { d.icon = icon; input.value = icon; this.touch(); paint(); }, "icon-pick");
+      pick.dataset.icon = icon; pick.title = icon; pick.setAttribute("aria-label", icon);
+      picks.append(pick);
+    }
+    paint();
+    return element("div", {class: "icon-field"}, element("label", {}, element("span", {}, this.t("icon")), element("div", {class: "icon-input"}, preview, input)), picks, hint);
   }
   setKind(value) {
     const d = this.draft;
@@ -653,19 +692,18 @@ class VisualTemplateBuilderPanel extends HTMLElement {
       }
       box.append(control); return box;
     }
-    // Nested compound rules have a small change menu; their operands remain inline.
+    // Nested compound rules sit in their own framed block, headed by the same "Use" choice as plain values.
     const toolbar = element("div", {class: "expression-toolbar"});
-    if (depth > 0) {
-      const menu = element("details", {class: "change-rule"}, element("summary", {title: this.t("changeRule"), "aria-label": this.t("changeRule")}, "⋯"), chooser);
-      toolbar.append(menu);
-    }
+    if (depth > 0 && COMPARE.includes(node.op)) {
+      // Comparisons are the common case inside groups: keep their type switch small and out of the way.
+      box.classList.add("nested", "compact"); chooser.classList.add("kind-switch"); toolbar.append(chooser);
+    } else if (depth > 0) { box.classList.add("nested"); toolbar.append(this.field(this.t("inputKind"), chooser)); }
     if (MATH.includes(node.op)) {
       const operation = this.select(node.op, MATH.map(key => [key, OPS[key][this.lang === "it" ? 0 : 1]]), value => this.changeOperation(node, value));
-      toolbar.prepend(this.field(this.t("operation"), operation));
+      toolbar.append(this.field(this.t("operation"), operation));
     } else if (["and", "or"].includes(node.op)) {
-      toolbar.prepend(this.select(node.op, [["and", this.t("allConditions")], ["or", this.t("anyCondition")]], value => this.changeOperation(node, value)));
-      toolbar.firstChild.setAttribute("aria-label", this.t("group"));
-    } else if (node.op === "count" || node.op === "not") toolbar.prepend(element("span", {class: "rule-caption"}, this.t(node.op === "count" ? "countHelp" : "negateHelp")));
+      toolbar.append(this.field(this.t("when"), this.select(node.op, [["and", this.t("allConditions")], ["or", this.t("anyCondition")]], value => this.changeOperation(node, value)), this.t("group")));
+    } else if (node.op === "count" || node.op === "not") toolbar.append(element("span", {class: "rule-caption"}, this.t(node.op === "count" ? "countHelp" : "negateHelp")));
     // At the top level, the rule type and its main option share one row.
     if (depth === 0 && toolbar.childNodes.length) { box.firstChild.classList.add("rule-head"); box.firstChild.append(...toolbar.childNodes); }
     else if (toolbar.childNodes.length) box.append(toolbar);
@@ -729,7 +767,7 @@ class VisualTemplateBuilderPanel extends HTMLElement {
       const shown = result.value === null ? "—" : typeof result.value === "boolean" ? result.value ? "ON" : "OFF" : String(result.value);
       this.previewBox.replaceChildren(element("h2", {}, this.t("preview")), element("div", {class: "result"}, shown), element("small", {}, this.draft.unit || ""));
       const quick = this.shadowRoot.querySelector(".quick-result");
-      if (quick) quick.textContent = `${this.t("result")}: ${shown}${this.draft.unit && result.value !== null ? ` ${this.draft.unit}` : ""}`;
+      if (quick) quick.textContent = `= ${shown}${this.draft.unit && result.value !== null ? ` ${this.draft.unit}` : ""}`;
       if (result.error) this.previewBox.append(element("p", {class: "error"}, result.error));
       if (result.error && this.draft.missing === "keep") this.previewBox.append(element("p", {}, this.t("retained")));
       this.previewBox.append(element("div", {class: "source-list"}, element("strong", {}, this.t("sources")), ...(result.sources.length ? result.sources.map(id => element("p", {}, element("small", {}, this._hass.states[id]?.attributes.friendly_name || id), element("small", {}, id))) : [element("p", {}, this.t("noSources"))])));
