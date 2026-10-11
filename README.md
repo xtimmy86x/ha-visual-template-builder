@@ -22,7 +22,7 @@ L'editor è diviso in tre passaggi numerati:
 1. **Nome e tipo:** assegna un nome e scegli il risultato tra le schede **Numero**, **Testo** o **Acceso / spento**, ognuna con un esempio.
 2. **Regola:** parti da un esempio rapido (es. *Converti unità (W → kW)*, *Sopra una soglia*) oppure scegli un'operazione. Ogni elemento può contenere un'entità, un valore fisso o un'altra operazione.
    Cerca le entità per nome o ID: l'elenco mostra nome, ID e valore attuale. In **Valore da leggere** scegli lo stato o uno degli attributi reali dell'entità.
-3. **Opzioni avanzate:** unità, icona, classi e comportamento quando il calcolo fallisce. Con **Copia da …** riprendi unità e classi dalla sorgente.
+3. **Opzioni avanzate:** unità, icona (con anteprima mentre scrivi e icone suggerite), classi e comportamento quando il calcolo fallisce. Con **Copia da …** riprendi unità e classi dalla sorgente.
 
 - Controlla l'anteprima; su mobile il risultato resta visibile accanto a **Salva sensore**.
 - Salva: l'entità viene aggiunta subito. Le modifiche alle regole non ricaricano l'integrazione.
@@ -37,7 +37,7 @@ L’editor generale ora propone controlli adatti al risultato scelto:
 - **Più condizioni:** scegli se devono essere vere tutte oppure almeno una, e aggiungi righe.
 - **Testi e conteggi:** aggiungi solo i valori o le condizioni che ti servono.
 
-Il selettore **Usa** cambia la sorgente di un valore (entità, numero, testo, ecc.). Il menu **⋯** cambia il tipo delle regole composte. Gli attributi sono raccolti in **Usa un attributo**. **La regola in parole** riassume la logica con i nomi delle entità mentre la modifichi.
+Il selettore **Usa** cambia la sorgente di un valore (entità, numero, testo, ecc.). Le regole dentro altre regole (es. un calcolo tra parentesi) compaiono in un riquadro con bordo colorato, con il proprio **Usa** e la propria operazione. Gli attributi sono raccolti in **Usa un attributo**. **La regola in parole** riassume la logica con i nomi delle entità mentre la modifichi.
 
 Le configurazioni precedenti vengono lette senza modificare le espressioni salvate. Il motore di calcolo e la gestione della disponibilità restano gli stessi.
 
