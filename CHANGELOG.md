@@ -1,5 +1,13 @@
 # Changelog
 
+## Unreleased
+
+- Reorganized the editor into numbered steps: name and type, rule, advanced options.
+- Result type is chosen from cards with an example each; new sensors offer one-click rule examples.
+- Searchable entity picker with friendly names, live values and readable chips; attributes are chosen from the entity's real attributes.
+- Advanced options can copy unit and classes from the source entity; state classes have readable labels.
+- The save bar stays visible and shows the live result on mobile.
+
 ## 0.3.0
 
 - Redesigned the general expression editor for calculations, comparisons, conditions, counts and text composition.

@@ -17,10 +17,14 @@ Per aggiornamenti successivi, aggiorna da HACS e riavvia Home Assistant. Se il p
 
 ### Crea il primo sensore
 
-- Premi **Crea sensore**, assegna un nome e scegli il risultato: numero, testo o binario.
-- Scegli un'operazione. Ogni elemento può contenere un'entità, un valore fisso o un'altra operazione.
-- Il selettore delle entità mostra ID, nome e stato corrente. Puoi leggere anche un attributo scalare indicandone il nome.
-- Controlla l'anteprima. In **Proprietà e disponibilità**, imposta unità, icona, classi e comportamento quando il calcolo fallisce.
+L'editor è diviso in tre passaggi numerati:
+
+1. **Nome e tipo:** assegna un nome e scegli il risultato tra le schede **Numero**, **Testo** o **Acceso / spento**, ognuna con un esempio.
+2. **Regola:** parti da un esempio rapido (es. *Converti unità (W → kW)*, *Sopra una soglia*) oppure scegli un'operazione. Ogni elemento può contenere un'entità, un valore fisso o un'altra operazione.
+   Cerca le entità per nome o ID: l'elenco mostra nome, ID e valore attuale. In **Valore da leggere** scegli lo stato o uno degli attributi reali dell'entità.
+3. **Opzioni avanzate:** unità, icona, classi e comportamento quando il calcolo fallisce. Con **Copia da …** riprendi unità e classi dalla sorgente.
+
+- Controlla l'anteprima; su mobile il risultato resta visibile accanto a **Salva sensore**.
 - Salva: l'entità viene aggiunta subito. Le modifiche alle regole non ricaricano l'integrazione.
 
 ### Editor generale: regole leggibili
@@ -43,13 +47,13 @@ Le configurazioni precedenti vengono lette senza modificare le espressioni salva
 
 ![Esempio del nuovo editor Stato → testo](docs/state-to-text.png)
 
-Scegli **Risultato → Testo**. La modalità **Stato → testo** si apre automaticamente:
+Scegli la scheda **Testo** in **Nome e tipo**. La modalità **Stato → testo** si apre automaticamente:
 
 1. Seleziona l’entità, ad esempio una tapparella.
 2. Modifica il testo accanto a ciascuno stato: **Chiuso → Tapparella chiusa**, **Aperto → Tapparella aperta**, **In apertura → Si sta aprendo**, **In chiusura → Si sta chiudendo**.
 3. Imposta il testo per eventuali altri stati e salva.
 
-Le tapparelle propongono i quattro stati distinti; interruttori e sensori binari propongono acceso/spento. Per entità con opzioni vengono proposte le opzioni disponibili. Puoi aggiungere stati personalizzati, fino a 10 righe. Il testo per gli altri stati **non sostituisce** la gestione di `unknown`/`unavailable`, configurabile in **Proprietà e disponibilità**.
+Le tapparelle propongono i quattro stati distinti; interruttori e sensori binari propongono acceso/spento. Per entità con opzioni vengono proposte le opzioni disponibili. Puoi aggiungere stati personalizzati, fino a 10 righe. Il testo per gli altri stati **non sostituisce** la gestione di `unknown`/`unavailable`, configurabile in **Opzioni avanzate**.
 
 Le regole semplici già create nella 0.1.0 si aprono nella tabella mantenendo esattamente testi e caso “Altrimenti”. Le logiche più complesse restano nella vista **Regole e calcoli**. Il cambio di vista non modifica la regola salvata.
 

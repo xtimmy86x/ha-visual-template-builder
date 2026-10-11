@@ -5,7 +5,7 @@ const TEXT = {
     customValue: "Scrivi un altro valore…", goal: "Cosa vuoi ottenere?", inputKind: "Usa", calculation: "Un calcolo", comparison: "Un confronto", group: "Più condizioni", conditional: "Un risultato in base a una condizione", joinedText: "Un testo con più valori", inverted: "Una condizione invertita", counted: "Un conteggio",
     fixedNumber: "Numero", fixedText: "Testo", fixedBoolean: "Sì / No", valueLabel: "Valore", compareLabel: "Confronto", changeRule: "Cambia tipo di regola", summary: "La regola in parole",
     show: "Mostra", elseShow: "Altrimenti mostra", yes: "Sì", no: "No", addValue: "Aggiungi valore", addCondition: "Aggiungi condizione", allConditions: "Tutte queste condizioni sono vere", anyCondition: "Almeno una di queste condizioni è vera", countHelp: "Conta quante di queste condizioni sono vere.",
-    negateHelp: "La seguente condizione deve essere falsa", chooseValue: "Scegli un valore", genericHelp: "Scegli i valori da usare e completa la regola. Puoi combinare calcoli e condizioni quando serve.",
+    negateHelp: "La seguente condizione deve essere falsa", chooseValue: "Scegli un valore",
     eqWord: "è uguale a", neWord: "è diverso da", gtWord: "è maggiore di", gteWord: "è almeno", ltWord: "è minore di", lteWord: "è al massimo", nearWord: "è uguale entro una tolleranza a", andWord: "e", orWord: "oppure", sourcePlaceholder: "Cerca un’entità…",
     mapping: "Stato → testo", advanced: "Regole e calcoli", mappingHelp: "Scegli l’entità e scrivi il testo da mostrare per ogni stato.",
     mappingSource: "Quale entità vuoi descrivere?", mappingState: "Quando lo stato è", mappingText: "Mostra questo testo",
@@ -15,7 +15,7 @@ const TEXT = {
     mappingDuplicate: "Ogni stato può comparire una sola volta. Rimuovi o modifica le righe duplicate.",
     mappingEmpty: "Seleziona un’entità e completa gli stati della tabella.",
     complexRule: "Questa regola usa una logica più complessa e si modifica nella vista Regole e calcoli.",
-    sourceMissingHelp: "Se l’entità non è disponibile, si applica il comportamento scelto in Proprietà e disponibilità.",
+    sourceMissingHelp: "Se l’entità non è disponibile, si applica il comportamento scelto in Opzioni avanzate.",
     otherDefault: "Altro stato", state_on: "Acceso", state_off: "Spento", state_open: "Aperto", state_closed: "Chiuso", state_opening: "In apertura", state_closing: "In chiusura",
     valueType: "Tipo di valore", title: "Sensori visuali", intro: "Trasforma le tue entità in calcoli, condizioni e testi. Senza codice.",
     new: "Crea sensore", empty: "Il tuo primo sensore visuale", emptyText: "Scegli un tipo di risultato e componi la regola con le entità di Home Assistant.",
@@ -28,7 +28,7 @@ const TEXT = {
     keepHelp: "Il valore conservato avrà l’attributo stale=true. Prima del primo valore valido il sensore resta indisponibile.",
     source: "Entità", attribute: "Valore da leggere", constant: "Valore fisso", add: "Aggiungi elemento", remove: "Rimuovi",
     then: "Allora", otherwise: "Altrimenti", condition: "Se", tolerance: "Tolleranza", digits: "Decimali",
-    settings: "Proprietà e disponibilità", sources: "Sorgenti", live: "Valore attuale", refresh: "Aggiorna elenco", copy: "copia",
+    settings: "Opzioni avanzate", sources: "Sorgenti", live: "Valore attuale", refresh: "Aggiorna elenco", copy: "copia",
     retained: "In esecuzione verrà mantenuto l’ultimo valore valido, se presente.", saved: "Sensore salvato", error: "Errore",
     export: "Esporta configurazione", search: "Cerca un sensore…", typeFixed: "Il tipo non è modificabile dopo la creazione.",
     choose: "Seleziona un’entità…", operation: "Operazione", noSources: "Nessuna sorgente: valore costante", pending: "Calcolo…",
@@ -36,12 +36,17 @@ const TEXT = {
     moreMatches: "Altre {n} entità: continua a scrivere per restringere la ricerca.", notFound: "Entità non trovata in Home Assistant",
     copyProps: "Copia da {name}", copyPropsHelp: "La sorgente usa queste proprietà:",
     state_class_measurement: "Misura istantanea", state_class_total: "Totale", state_class_total_increasing: "Totale crescente",
+    step1: "Nome e tipo", step2: "Regola", step3: "Opzioni avanzate", namePlaceholder: "Es. Consumo netto",
+    kindHelp_number: "Calcoli tra sensori, es. consumo netto in kW", kindHelp_text: "Descrivi uno stato a parole, es. “Tapparella chiusa”", kindHelp_binary: "Vero o falso, es. macchina in funzione",
+    binaryShort: "Acceso / spento", examples: "Parti da un esempio:", advancedHelp: "Unità, icona, classi e cosa fare se una sorgente non è disponibile.",
+    ex_convert: "Converti unità (W → kW)", ex_sum: "Somma di sensori", ex_difference: "Differenza tra sensori", ex_mean: "Media di sensori",
+    ex_threshold: "Sopra una soglia", ex_state: "Entità in uno stato", ex_all: "Tutte le condizioni vere", ex_any: "Almeno una condizione vera", result: "Risultato",
   },
   en: {
     customValue: "Enter another value…", goal: "What do you want to create?", inputKind: "Use", calculation: "A calculation", comparison: "A comparison", group: "Multiple conditions", conditional: "A result based on a condition", joinedText: "Text with multiple values", inverted: "An inverted condition", counted: "A count",
     fixedNumber: "Number", fixedText: "Text", fixedBoolean: "Yes / No", valueLabel: "Value", compareLabel: "Comparison", changeRule: "Change rule type", summary: "Your rule in words",
     show: "Show", elseShow: "Otherwise show", yes: "Yes", no: "No", addValue: "Add value", addCondition: "Add condition", allConditions: "All these conditions are true", anyCondition: "At least one of these conditions is true", countHelp: "Count how many of these conditions are true.",
-    negateHelp: "The following condition must be false", chooseValue: "Choose a value", genericHelp: "Choose the values and complete the rule. Combine calculations and conditions when needed.",
+    negateHelp: "The following condition must be false", chooseValue: "Choose a value",
     eqWord: "equals", neWord: "does not equal", gtWord: "is greater than", gteWord: "is at least", ltWord: "is less than", lteWord: "is at most", nearWord: "is within tolerance of", andWord: "and", orWord: "or", sourcePlaceholder: "Search for an entity…",
     mapping: "State → text", advanced: "Rules and calculations", mappingHelp: "Choose the entity and enter the text to display for each state.",
     mappingSource: "Which entity do you want to describe?", mappingState: "When the state is", mappingText: "Display this text",
@@ -51,7 +56,7 @@ const TEXT = {
     mappingDuplicate: "Each state can appear only once. Remove or change duplicate rows.",
     mappingEmpty: "Choose an entity and complete the states in the table.",
     complexRule: "This rule uses more complex logic and can be edited in Rules and calculations.",
-    sourceMissingHelp: "When the entity is unavailable, the behavior in Properties and availability applies.",
+    sourceMissingHelp: "When the entity is unavailable, the behavior in Advanced options applies.",
     otherDefault: "Other state", state_on: "On", state_off: "Off", state_open: "Open", state_closed: "Closed", state_opening: "Opening", state_closing: "Closing",
     valueType: "Value type", title: "Visual sensors", intro: "Turn your entities into calculations, conditions and text. No code needed.",
     new: "Create sensor", empty: "Your first visual sensor", emptyText: "Choose a result type and compose a rule using Home Assistant entities.",
@@ -64,7 +69,7 @@ const TEXT = {
     keepHelp: "Retained values have stale=true. Until the first valid value, the sensor stays unavailable.",
     source: "Entity", attribute: "Value to read", constant: "Constant", add: "Add operand", remove: "Remove",
     then: "Then", otherwise: "Otherwise", condition: "If", tolerance: "Tolerance", digits: "Decimals",
-    settings: "Properties and availability", sources: "Sources", live: "Current value", refresh: "Refresh list", copy: "copy",
+    settings: "Advanced options", sources: "Sources", live: "Current value", refresh: "Refresh list", copy: "copy",
     retained: "At runtime the last valid value will be retained, if one exists.", saved: "Sensor saved", error: "Error",
     export: "Export configuration", search: "Search sensors…", typeFixed: "The result type cannot change after creation.",
     choose: "Select an entity…", operation: "Operation", noSources: "No sources: constant value", pending: "Calculating…",
@@ -72,6 +77,11 @@ const TEXT = {
     moreMatches: "{n} more entities: keep typing to narrow the search.", notFound: "Entity not found in Home Assistant",
     copyProps: "Copy from {name}", copyPropsHelp: "The source uses these properties:",
     state_class_measurement: "Measurement", state_class_total: "Total", state_class_total_increasing: "Total increasing",
+    step1: "Name and type", step2: "Rule", step3: "Advanced options", namePlaceholder: "E.g. Net consumption",
+    kindHelp_number: "Calculations between sensors, e.g. net consumption in kW", kindHelp_text: "Describe a state in words, e.g. “Shutter closed”", kindHelp_binary: "True or false, e.g. machine running",
+    binaryShort: "On / off", examples: "Start from an example:", advancedHelp: "Unit, icon, classes and what to do when a source is unavailable.",
+    ex_convert: "Convert units (W → kW)", ex_sum: "Sum of sensors", ex_difference: "Difference between sensors", ex_mean: "Average of sensors",
+    ex_threshold: "Above a threshold", ex_state: "Entity in a state", ex_all: "All conditions true", ex_any: "At least one condition true", result: "Result",
   },
 };
 const OPS = {
@@ -135,6 +145,21 @@ function expressionKind(node) {
 }
 const emptyEntity = () => ({op: "entity", entity_id: "", attribute: ""});
 const simpleComparison = () => ({op: "eq", args: [emptyEntity(), constant("on")]});
+// Starting points offered while creating a sensor; each is an ordinary expression.
+const EXAMPLES = {
+  number: {
+    convert: () => ({op: "divide", args: [emptyEntity(), constant(1000)]}),
+    sum: () => ({op: "add", args: [emptyEntity(), emptyEntity()]}),
+    difference: () => ({op: "subtract", args: [emptyEntity(), emptyEntity()]}),
+    mean: () => ({op: "mean", args: [emptyEntity(), emptyEntity()]}),
+  },
+  binary: {
+    threshold: () => ({op: "gt", args: [emptyEntity(), constant(100)]}),
+    state: () => simpleComparison(),
+    all: () => ({op: "and", args: [simpleComparison(), simpleComparison()]}),
+    any: () => ({op: "or", args: [simpleComparison(), simpleComparison()]}),
+  },
+};
 function element(tag, attrs = {}, ...children) {
   const node = document.createElement(tag);
   for (const [key, value] of Object.entries(attrs)) {
@@ -152,6 +177,13 @@ const CSS = `
 
 .entity-picker{position:relative;min-width:0;container:picker/inline-size}.entity-chip{display:flex;align-items:center;gap:10px;min-height:44px;padding:6px 6px 6px 8px;border:1px solid var(--divider-color,#cbd5e1);border-radius:8px;background:var(--card-background-color,white);min-width:0}.entity-chip.unknown{border-color:var(--warning-color,#f59e0b)}.entity-icon{flex:none;display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:50%;background:var(--secondary-background-color,#edf5fb);color:var(--accent);font-weight:700;font-size:14px;--mdc-icon-size:18px}.entity-text{display:flex;flex-direction:column;flex:1;min-width:0;line-height:1.25}.entity-text strong{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.entity-text small{font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.entity-state{flex:none;max-width:40%;font-size:13px;font-weight:600;color:var(--primary-text-color,#18283b);background:var(--secondary-background-color,#f1f5f9);padding:4px 8px;border-radius:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.entity-chip .entity-change{flex:none;min-height:32px;padding:4px 10px;font-size:13px;color:var(--accent);border-color:transparent;background:transparent}.entity-options{position:absolute;z-index:5;left:0;right:0;top:calc(100% + 4px);max-height:330px;overflow:auto;background:var(--card-background-color,white);border:1px solid var(--divider-color,#cbd5e1);border-radius:10px;box-shadow:0 10px 28px rgba(15,23,42,.18);padding:4px}.entity-option{display:flex;align-items:center;gap:10px;padding:7px 8px;border-radius:7px;cursor:pointer;min-width:0}.entity-option[aria-selected="true"]{background:var(--secondary-background-color,#edf5fb)}.entity-option .entity-state{background:transparent;font-weight:500;color:var(--secondary-text-color,#64748b)}.entity-hint{margin:6px 8px;font-size:13px}.picker-field>span{display:block;font-size:13px;font-weight:600;margin:0 0 7px}@container picker (max-width:340px){.entity-chip{flex-wrap:wrap;row-gap:4px}.entity-text{flex-basis:calc(100% - 40px)}.entity-chip .entity-state{margin-left:40px;max-width:calc(100% - 120px)}.entity-chip .entity-change{margin-left:auto}}
 .copy-properties{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin:0 0 18px;padding:12px 14px;border-radius:10px;background:var(--secondary-background-color,#f5f8fb);font-size:14px}
+.step-title{display:flex;align-items:center;gap:10px}.step-number{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:var(--accent);color:white;font-size:14px;font-weight:700;flex:none}
+.field-label{display:block;font-size:13px;font-weight:600;margin:18px 0 7px}.kind-choice{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.kind-card{position:relative;display:flex;align-items:flex-start;gap:10px;padding:12px;border:1px solid var(--divider-color,#cbd5e1);border-radius:10px;cursor:pointer;background:var(--card-background-color,white)}.kind-card:has(input:checked){border-color:var(--accent);box-shadow:0 0 0 1px var(--accent);background:var(--secondary-background-color,#f1f8fd)}.kind-card:has(input:disabled){cursor:default}.kind-card:has(input:disabled:not(:checked)){opacity:.45}.kind-card input{position:absolute;opacity:0;width:1px;height:1px;min-height:0}.kind-card:has(input:focus-visible){outline:2px solid var(--accent);outline-offset:2px}.kind-symbol{flex:none;width:38px;height:38px;border-radius:9px;display:inline-flex;align-items:center;justify-content:center;background:var(--secondary-background-color,#edf5fb);color:var(--accent);font-weight:700;font-size:13px}.kind-text{display:flex;flex-direction:column;gap:3px;min-width:0}.kind-text small{font-size:12px;line-height:1.35}.kind-field>small{display:block;margin-top:8px}
+.examples{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:0 0 20px}.examples>span{font-size:13px;color:var(--secondary-text-color,#64748b);margin-right:2px}button.chip{min-height:32px;padding:5px 12px;border-radius:16px;font-size:13px;color:var(--accent);border-color:var(--accent)}
+.rule-head{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px 16px;align-items:end}.rule-head>select{align-self:end}.rule-head .rule-caption{grid-column:1/-1;margin:0}
+.entity-settings>summary{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px;margin:0;list-style:none}.entity-settings>summary::-webkit-details-marker{display:none}.entity-settings>summary .step-title{margin:0}.entity-settings>summary{position:relative;padding-right:28px}.entity-settings>summary::after{content:"▾";position:absolute;right:0;top:2px;font-size:18px;color:var(--secondary-text-color,#64748b)}.entity-settings[open]>summary::after{content:"▴"}.entity-settings[open]>summary{margin-bottom:18px}.summary-help{font-weight:400;flex-basis:100%;padding-left:38px}
+.actions{position:sticky;bottom:0;z-index:3;align-items:center;flex-wrap:wrap;padding:12px 0;background:var(--primary-background-color,#f5f7fa);border-top:1px solid var(--divider-color,#dde3eb)}.quick-result{display:none;margin-left:auto;font-weight:600;overflow-wrap:anywhere}@media(max-width:850px){.quick-result{display:block;flex:1 1 90px;text-align:right;font-size:14px}}
+@media(max-width:600px){.kind-choice{grid-template-columns:1fr}.kind-card{padding:10px}.summary-help{padding-left:0}}
 .mode-choice{display:flex;gap:8px;margin:12px 0 18px;flex-wrap:wrap}.mode-choice button[aria-pressed="true"]{background:var(--accent);color:white;border-color:var(--accent)}
 .mapping-intro{margin-top:0}.mapping-current{display:block;margin:12px 0 20px;color:var(--secondary-text-color,#64748b)}
 .mapping-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) auto;gap:12px;align-items:end;padding:14px 0;border-top:1px solid var(--divider-color,#dde3eb)}
@@ -355,16 +387,26 @@ class VisualTemplateBuilderPanel extends HTMLElement {
     const d = this.draft;
     main.append(element("h1", {}, d.id ? this.t("edit") : this.t("new")));
     const layout = element("div", {class: "editor"}); const form = element("div"); layout.append(form); main.append(layout);
-    const kind = this.select(d.kind, ["number", "text", "binary"].map(x => [x, this.t(x)]), value => {
-      d.kind = value; d.unit = ""; d.device_class = ""; d.state_class = ""; d.fallback = value === "binary" ? false : value === "number" ? 0 : "";
-      d.expression = value === "number" ? {op: "add", args: [emptyEntity(), constant(0)]} : value === "binary" ? simpleComparison() : expression("if");
-      this.mapping = value === "text" ? {entityId: "", rows: [{state: "", text: ""}], otherwise: this.t("otherDefault")} : null;
-      this.editorMode = this.mapping ? "mapping" : "advanced";
-      if (this.mapping) this.syncMapping();
-      this.touch(); this.render();
-    }); if (d.id) { kind.disabled = true; kind.title = this.t("typeFixed"); }
-    form.append(element("div", {class: "section fields"}, this.field(this.t("name"), this.input(d.name, value => {d.name = value; this.touch();}, {maxlength: "100"})), this.field(this.t("kind"), kind)));
-    const formula = element("section", {class: "section"}, element("h2", {}, this.t("formula")));
+    const step = (number, title) => element("h2", {class: "step-title"}, element("span", {class: "step-number", "aria-hidden": "true"}, String(number)), element("span", {}, title));
+    // Result type as cards with an example each; fixed once the sensor exists.
+    const kinds = element("div", {class: "kind-choice", role: "radiogroup", "aria-label": this.t("kind")});
+    for (const value of ["number", "text", "binary"]) {
+      const radio = element("input", {type: "radio", name: "vtb-kind", value, "aria-label": this.t(value === "binary" ? "binaryShort" : value), onchange: () => this.setKind(value)});
+      radio.checked = d.kind === value; radio.disabled = Boolean(d.id);
+      kinds.append(element("label", {class: "kind-card", title: d.id ? this.t("typeFixed") : null}, radio,
+        element("span", {class: "kind-symbol", "aria-hidden": "true"}, {number: "123", text: "Abc", binary: "⏻"}[value]),
+        element("span", {class: "kind-text"}, element("strong", {}, this.t(value === "binary" ? "binaryShort" : value)), element("small", {}, this.t(`kindHelp_${value}`)))));
+    }
+    const kindField = element("div", {class: "kind-field"}, element("span", {class: "field-label"}, this.t("kind")), kinds);
+    if (d.id) kindField.append(element("small", {}, this.t("typeFixed")));
+    form.append(element("section", {class: "section"}, step(1, this.t("step1")),
+      this.field(this.t("name"), this.input(d.name, value => {d.name = value; this.touch();}, {maxlength: "100", placeholder: this.t("namePlaceholder")})), kindField));
+    const formula = element("section", {class: "section"}, step(2, this.t("step2")));
+    if (!d.id && EXAMPLES[d.kind]) {
+      const examples = element("div", {class: "examples"}, element("span", {}, this.t("examples")));
+      for (const [key, build] of Object.entries(EXAMPLES[d.kind])) examples.append(this.button(this.t(`ex_${key}`), () => { d.expression = build(); this.touch(); this.render(); }, "chip"));
+      formula.append(examples);
+    }
     if (d.kind === "text") {
       const modes = element("div", {class: "mode-choice", role: "group", "aria-label": this.t("formula")});
       for (const mode of ["mapping", "advanced"]) {
@@ -388,11 +430,11 @@ class VisualTemplateBuilderPanel extends HTMLElement {
     }
     if (this.editorMode === "mapping" && d.kind === "text") this.renderMapping(formula);
     else {
-      formula.append(element("p", {class: "mapping-intro"}, this.t("genericHelp")), this.renderNode(d.expression, value => { d.expression = value; }, 0, d.kind));
+      formula.append(this.renderNode(d.expression, value => { d.expression = value; }, 0, d.kind));
       formula.append(element("div", {class: "rule-summary"}, element("strong", {}, this.t("summary")), element("p", {class: "rule-summary-text"}, this.describe(d.expression))));
     }
     form.append(formula);
-    const settings = element("details", {class: "section entity-settings"}, element("summary", {}, this.t("settings")));
+    const settings = element("details", {class: "section entity-settings"}, element("summary", {}, step(3, this.t("step3")), element("small", {class: "summary-help"}, this.t("advancedHelp"))));
     settings.append(element("div", {class: "copy-slot"}));
     const fields = element("div", {class: "fields"}); settings.append(fields);
     for (const key of ["unit", "icon"]) if (key !== "unit" || d.kind === "number") fields.append(this.field(this.t(key), this.input(d[key], value => { d[key] = value; this.touch(); }, key === "icon" ? {placeholder: "mdi:function-variant"} : {placeholder: "kW", list: "vtb-units"})));
@@ -404,11 +446,21 @@ class VisualTemplateBuilderPanel extends HTMLElement {
     if (d.missing === "keep") settings.append(element("p", {}, this.t("keepHelp")));
     form.append(settings);
     this.saveButton = this.button(this.t("save"), () => this.save(), "primary"); this.saveButton.disabled = this.busy;
-    form.append(element("div", {class: "actions"}, this.saveButton, this.button(this.t("cancel"), () => this.cancel())));
+    form.append(element("div", {class: "actions"}, this.saveButton, this.button(this.t("cancel"), () => this.cancel()),
+      element("span", {class: "quick-result", "aria-hidden": "true"})));
     this.previewBox = element("aside", {class: "section preview", "aria-live": "polite"}, element("h2", {}, this.t("preview")), element("p", {}, this.t("pending"))); layout.append(this.previewBox);
     const units = new Set(Object.values(this._hass.states).map(state => state.attributes.unit_of_measurement).filter(unit => typeof unit === "string"));
     main.append(element("datalist", {id: "vtb-units"}, ...[...units].sort().map(unit => element("option", {value: unit}))));
     this.updateMappingLive(); this.updateCopyProperties(); this.queuePreview();
+  }
+  setKind(value) {
+    const d = this.draft;
+    d.kind = value; d.unit = ""; d.device_class = ""; d.state_class = ""; d.fallback = value === "binary" ? false : value === "number" ? 0 : "";
+    d.expression = value === "number" ? {op: "add", args: [emptyEntity(), constant(0)]} : value === "binary" ? simpleComparison() : expression("if");
+    this.mapping = value === "text" ? {entityId: "", rows: [{state: "", text: ""}], otherwise: this.t("otherDefault")} : null;
+    this.editorMode = this.mapping ? "mapping" : "advanced";
+    if (this.mapping) this.syncMapping();
+    this.touch(); this.render();
   }
   updateCopyProperties() {
     const slot = this.shadowRoot.querySelector(".copy-slot");
@@ -598,7 +650,9 @@ class VisualTemplateBuilderPanel extends HTMLElement {
       toolbar.prepend(this.select(node.op, [["and", this.t("allConditions")], ["or", this.t("anyCondition")]], value => this.changeOperation(node, value)));
       toolbar.firstChild.setAttribute("aria-label", this.t("group"));
     } else if (node.op === "count" || node.op === "not") toolbar.prepend(element("span", {class: "rule-caption"}, this.t(node.op === "count" ? "countHelp" : "negateHelp")));
-    if (toolbar.childNodes.length) box.append(toolbar);
+    // At the top level, the rule type and its main option share one row.
+    if (depth === 0 && toolbar.childNodes.length) { box.firstChild.classList.add("rule-head"); box.firstChild.append(...toolbar.childNodes); }
+    else if (toolbar.childNodes.length) box.append(toolbar);
     if (node.op === "if") {
       const labels = [this.t("condition"), this.t("show"), this.t("elseShow")];
       node.args.forEach((arg, index) => box.append(element("div", {class: "condition-section"}, element("span", {class: "sentence-label"}, labels[index]), this.renderNode(arg, value => {node.args[index] = value;}, depth + 1, index === 0 ? "binary" : expected))));
@@ -656,7 +710,10 @@ class VisualTemplateBuilderPanel extends HTMLElement {
       }
       const result = await this.api("preview", {definition: {...this.draft, name: this.draft.name || "Preview"}});
       if (sequence !== this.sequence || !this.draft) return;
-      this.previewBox.replaceChildren(element("h2", {}, this.t("preview")), element("div", {class: "result"}, result.value === null ? "—" : typeof result.value === "boolean" ? result.value ? "ON" : "OFF" : String(result.value)), element("small", {}, this.draft.unit || ""));
+      const shown = result.value === null ? "—" : typeof result.value === "boolean" ? result.value ? "ON" : "OFF" : String(result.value);
+      this.previewBox.replaceChildren(element("h2", {}, this.t("preview")), element("div", {class: "result"}, shown), element("small", {}, this.draft.unit || ""));
+      const quick = this.shadowRoot.querySelector(".quick-result");
+      if (quick) quick.textContent = `${this.t("result")}: ${shown}${this.draft.unit && result.value !== null ? ` ${this.draft.unit}` : ""}`;
       if (result.error) this.previewBox.append(element("p", {class: "error"}, result.error));
       if (result.error && this.draft.missing === "keep") this.previewBox.append(element("p", {}, this.t("retained")));
       this.previewBox.append(element("div", {class: "source-list"}, element("strong", {}, this.t("sources")), ...(result.sources.length ? result.sources.map(id => element("p", {}, element("small", {}, this._hass.states[id]?.attributes.friendly_name || id), element("small", {}, id))) : [element("p", {}, this.t("noSources"))])));
