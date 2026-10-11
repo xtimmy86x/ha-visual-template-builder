@@ -1,5 +1,7 @@
 /* Visual Template Builder: local, dependency-free Home Assistant custom panel. */
 const DOMAIN = "visual_template_builder";
+// Version the server announced when this script was loaded (release plus content hash).
+let loadedVersion = null;
 const TEXT = {
   it: {
     customValue: "Scrivi un altro valore…", goal: "Cosa vuoi ottenere?", inputKind: "Usa", calculation: "Un calcolo", comparison: "Un confronto", group: "Più condizioni", conditional: "Un risultato in base a una condizione", joinedText: "Un testo con più valori", inverted: "Una condizione invertita", counted: "Un conteggio",
@@ -41,6 +43,7 @@ const TEXT = {
     binaryShort: "Acceso / spento", examples: "Parti da un esempio:", advancedHelp: "Unità, icona, classi e cosa fare se una sorgente non è disponibile.",
     ex_convert: "Converti unità (W → kW)", ex_sum: "Somma di sensori", ex_difference: "Differenza tra sensori", ex_mean: "Media di sensori",
     ex_threshold: "Sopra una soglia", ex_state: "Entità in uno stato", ex_all: "Tutte le condizioni vere", ex_any: "Almeno una condizione vera", result: "Risultato",
+    updateAvailable: "È disponibile una nuova versione del pannello. Ricarica la pagina per usarla.", reload: "Ricarica",
   },
   en: {
     customValue: "Enter another value…", goal: "What do you want to create?", inputKind: "Use", calculation: "A calculation", comparison: "A comparison", group: "Multiple conditions", conditional: "A result based on a condition", joinedText: "Text with multiple values", inverted: "An inverted condition", counted: "A count",
@@ -82,6 +85,7 @@ const TEXT = {
     binaryShort: "On / off", examples: "Start from an example:", advancedHelp: "Unit, icon, classes and what to do when a source is unavailable.",
     ex_convert: "Convert units (W → kW)", ex_sum: "Sum of sensors", ex_difference: "Difference between sensors", ex_mean: "Average of sensors",
     ex_threshold: "Above a threshold", ex_state: "Entity in a state", ex_all: "All conditions true", ex_any: "At least one condition true", result: "Result",
+    updateAvailable: "A new version of the panel is available. Reload the page to use it.", reload: "Reload",
   },
 };
 const OPS = {
@@ -192,7 +196,7 @@ const CSS = `
 
 :host{display:block;height:100%;overflow:auto;background:var(--primary-background-color,#f5f7fa);color:var(--primary-text-color,#18283b);font-family:var(--paper-font-body1_-_font-family,system-ui);--accent:var(--primary-color,#039be5)}
 *{box-sizing:border-box}header{display:flex;align-items:center;gap:12px;padding:16px 24px;background:var(--card-background-color,white);border-bottom:1px solid var(--divider-color,#dde3eb);position:sticky;top:0;z-index:2}header strong{font-size:18px}header small{margin-left:auto;color:var(--secondary-text-color,#64748b)}
-main{max-width:1180px;margin:auto;padding:28px 24px 60px}h1{font-size:30px;margin:0 0 8px}h2{font-size:19px;margin:0 0 18px}p{color:var(--secondary-text-color,#64748b);line-height:1.55}.toolbar,.row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.toolbar{justify-content:space-between;margin:24px 0}.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}.card,.section{background:var(--card-background-color,white);border:1px solid var(--divider-color,#dde3eb);border-radius:16px;padding:22px}.card h2{margin:12px 0 6px}.card small{overflow-wrap:anywhere}.card .value{font-size:26px;margin:22px 0}.badge{display:inline-block;padding:5px 9px;border-radius:7px;background:var(--secondary-background-color,#edf5fb);font-size:12px;color:var(--accent)}button{font:inherit;cursor:pointer;border-radius:9px;min-height:40px;border:1px solid var(--divider-color,#d7e0e9);padding:9px 14px;background:var(--card-background-color,white);color:var(--primary-text-color,#18283b)}button:hover{filter:brightness(.96)}button.primary{background:var(--accent);color:white;border-color:var(--accent)}button.danger{color:var(--error-color,#db4437)}button:disabled{opacity:.5;cursor:wait}button:focus-visible,input:focus,select:focus{outline:2px solid var(--accent);outline-offset:2px}input,select{width:100%;min-width:0;background:var(--card-background-color,white);color:var(--primary-text-color,#18283b);border:1px solid var(--divider-color,#cbd5e1);border-radius:8px;padding:11px;font:inherit;min-height:44px}label{display:block;min-width:0}label>span{display:block;font-size:13px;font-weight:600;margin:0 0 7px}.fields{display:grid;grid-template-columns:1fr 1fr;gap:16px}.editor{display:grid;grid-template-columns:minmax(0,1fr) 290px;gap:20px;align-items:start}.section{margin-bottom:16px}.preview{position:sticky;top:88px;border-top:4px solid var(--accent)}.preview .result{font-size:28px;overflow-wrap:anywhere;margin:14px 0}.preview small{display:block;overflow-wrap:anywhere}.empty{text-align:center;padding:64px 24px}.empty .symbol{font-size:50px;color:var(--accent)}.error{color:var(--error-color,#db4437);overflow-wrap:anywhere}.notice{padding:12px 16px;background:var(--card-background-color,white);border-left:4px solid var(--accent);margin-bottom:16px;border-radius:6px}.actions{display:flex;gap:10px;margin-top:20px}.muted,small{color:var(--secondary-text-color,#64748b)}summary{cursor:pointer;font-weight:600;margin-bottom:18px}.source-list{margin-top:20px;border-top:1px solid var(--divider-color,#ddd);padding-top:14px}.search{max-width:320px}.menu{padding:8px;border:0;font-size:22px}.more{margin-top:10px} @media(max-width:850px){.editor{grid-template-columns:1fr}.preview{position:static}.fields{grid-template-columns:1fr}main{padding:20px 14px 40px}header{padding:12px 14px}.section{padding:16px}h1{font-size:25px}.toolbar>div{width:100%}.search{max-width:none}}
+main{max-width:1180px;margin:auto;padding:28px 24px 60px}h1{font-size:30px;margin:0 0 8px}h2{font-size:19px;margin:0 0 18px}p{color:var(--secondary-text-color,#64748b);line-height:1.55}.toolbar,.row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.toolbar{justify-content:space-between;margin:24px 0}.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}.card,.section{background:var(--card-background-color,white);border:1px solid var(--divider-color,#dde3eb);border-radius:16px;padding:22px}.card h2{margin:12px 0 6px}.card small{overflow-wrap:anywhere}.card .value{font-size:26px;margin:22px 0}.badge{display:inline-block;padding:5px 9px;border-radius:7px;background:var(--secondary-background-color,#edf5fb);font-size:12px;color:var(--accent)}button{font:inherit;cursor:pointer;border-radius:9px;min-height:40px;border:1px solid var(--divider-color,#d7e0e9);padding:9px 14px;background:var(--card-background-color,white);color:var(--primary-text-color,#18283b)}button:hover{filter:brightness(.96)}button.primary{background:var(--accent);color:white;border-color:var(--accent)}button.danger{color:var(--error-color,#db4437)}button:disabled{opacity:.5;cursor:wait}button:focus-visible,input:focus,select:focus{outline:2px solid var(--accent);outline-offset:2px}input,select{width:100%;min-width:0;background:var(--card-background-color,white);color:var(--primary-text-color,#18283b);border:1px solid var(--divider-color,#cbd5e1);border-radius:8px;padding:11px;font:inherit;min-height:44px}label{display:block;min-width:0}label>span{display:block;font-size:13px;font-weight:600;margin:0 0 7px}.fields{display:grid;grid-template-columns:1fr 1fr;gap:16px}.editor{display:grid;grid-template-columns:minmax(0,1fr) 290px;gap:20px;align-items:start}.section{margin-bottom:16px}.preview{position:sticky;top:88px;border-top:4px solid var(--accent)}.preview .result{font-size:28px;overflow-wrap:anywhere;margin:14px 0}.preview small{display:block;overflow-wrap:anywhere}.empty{text-align:center;padding:64px 24px}.empty .symbol{font-size:50px;color:var(--accent)}.error{color:var(--error-color,#db4437);overflow-wrap:anywhere}.update-notice{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}.notice{padding:12px 16px;background:var(--card-background-color,white);border-left:4px solid var(--accent);margin-bottom:16px;border-radius:6px}.actions{display:flex;gap:10px;margin-top:20px}.muted,small{color:var(--secondary-text-color,#64748b)}summary{cursor:pointer;font-weight:600;margin-bottom:18px}.source-list{margin-top:20px;border-top:1px solid var(--divider-color,#ddd);padding-top:14px}.search{max-width:320px}.menu{padding:8px;border:0;font-size:22px}.more{margin-top:10px} @media(max-width:850px){.editor{grid-template-columns:1fr}.preview{position:static}.fields{grid-template-columns:1fr}main{padding:20px 14px 40px}header{padding:12px 14px}.section{padding:16px}h1{font-size:25px}.toolbar>div{width:100%}.search{max-width:none}}
 `;
 class VisualTemplateBuilderPanel extends HTMLElement {
   constructor() {
@@ -217,6 +221,17 @@ class VisualTemplateBuilderPanel extends HTMLElement {
     }
   }
   get hass() { return this._hass; }
+  // Home Assistant passes the panel registration; a different version means newer code on the server.
+  set panel(value) {
+    const version = value?.config?.version;
+    if (!version) return;
+    loadedVersion ??= version;
+    const stale = version !== loadedVersion;
+    this.version = version;
+    if (stale !== Boolean(this.stale)) { this.stale = stale; if (this.shadowRoot.childNodes.length) this.render(); }
+    const label = this.shadowRoot.querySelector(".version-label");
+    if (label) { label.textContent = `v${loadedVersion.split("-")[0]}`; label.title = loadedVersion; }
+  }
   connectedCallback() { if (this._hass && !this.loaded) { this.loaded = true; this.load(); } }
   disconnectedCallback() { clearTimeout(this.timer); this.sequence++; }
   async api(action, extra = {}) { return this._hass.callWS({type: `${DOMAIN}/command`, action, ...extra}); }
@@ -358,8 +373,9 @@ class VisualTemplateBuilderPanel extends HTMLElement {
   render() {
     this.inputCounter = 0;
     this.shadowRoot.replaceChildren(element("style", {}, CSS));
-    this.shadowRoot.append(element("header", {}, this.button("☰", () => this.dispatchEvent(new CustomEvent("hass-toggle-menu", {bubbles: true, composed: true})), "menu"), element("strong", {}, "Visual Template Builder"), element("small", {}, "v0.3.0")));
+    this.shadowRoot.append(element("header", {}, this.button("☰", () => this.dispatchEvent(new CustomEvent("hass-toggle-menu", {bubbles: true, composed: true})), "menu"), element("strong", {}, "Visual Template Builder"), element("small", {class: "version-label", title: loadedVersion || ""}, loadedVersion ? `v${loadedVersion.split("-")[0]}` : "")));
     const main = element("main"); this.shadowRoot.append(main);
+    if (this.stale) main.append(element("div", {class: "notice update-notice", role: "status"}, element("span", {}, this.t("updateAvailable")), this.button(this.t("reload"), () => location.reload(), "primary")));
     if (this.notice) main.append(element("div", {class: "notice", role: "status"}, this.notice));
     if (this.draft) this.renderEditor(main); else this.renderList(main);
   }

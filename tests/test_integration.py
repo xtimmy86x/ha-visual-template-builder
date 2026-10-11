@@ -1,17 +1,20 @@
 """Exercise real HA entities, registry, storage and lifecycle with HTTP mocked."""
 
+import json
 from pathlib import Path
 from types import MappingProxyType, SimpleNamespace
 from unittest.mock import AsyncMock, Mock
 
 import pytest
 from homeassistant import loader
+from homeassistant.components import frontend
 from homeassistant.config_entries import ConfigEntries, ConfigEntry, ConfigEntryState
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import Unauthorized
 from homeassistant.helpers import entity_registry as er
 
-from custom_components.visual_template_builder.const import DOMAIN
+from custom_components.visual_template_builder import PANEL_PATH, panel_version
+from custom_components.visual_template_builder.const import DOMAIN, VERSION
 from custom_components.visual_template_builder.engine import InvalidExpression
 
 
@@ -205,3 +208,22 @@ async def test_setup_flow_single_instance(loaded):
     result = await hass.config_entries.flow.async_init(DOMAIN, context={"source": "user"})
     assert result["type"] == "abort"
     assert result["reason"] == "already_configured"
+
+
+async def test_panel_url_changes_with_panel_content(loaded, tmp_path):
+    hass, _, _ = loaded
+    panel = hass.data[frontend.DATA_PANELS][DOMAIN]
+    version = panel_version()
+    assert version.startswith(f"{VERSION}-")
+    assert panel.config["version"] == version
+    assert panel.config["_panel_custom"]["module_url"] == f"/{DOMAIN}/panel.js?v={version}"
+    copy = tmp_path / "panel.js"
+    copy.write_text(PANEL_PATH.read_text() + "\n// changed\n")
+    assert panel_version(copy) != version
+
+
+def test_manifest_version_matches_constant():
+    manifest = json.loads(
+        (Path(__file__).parents[1] / "custom_components" / DOMAIN / "manifest.json").read_text()
+    )
+    assert manifest["version"] == VERSION
