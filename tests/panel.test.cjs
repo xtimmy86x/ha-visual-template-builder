@@ -8,7 +8,11 @@ if (screenshotDir) fs.mkdirSync(screenshotDir, {recursive:true});
   const browser = await chromium.launch({headless:true, executablePath:process.env.VTB_CHROMIUM_PATH, args:process.env.VTB_CHROMIUM_PATH ? ["--no-sandbox", "--disable-dev-shm-usage", "--no-zygote", "--single-process"] : []});
   const page = await browser.newPage({viewport:{width:390,height:844}});
   const errors=[]; page.on('pageerror', error=>errors.push(error.message));
-  await page.setContent('<html><body style="margin:0"><visual-template-builder-panel></visual-template-builder-panel></body></html>');
+  // Served from a stand-in origin so the panel can fetch its icon list like it does in Home Assistant.
+  await page.route('http://vtb.test/**', route => route.request().url().includes('/visual_template_builder/mdi-icons.json')
+    ? route.fulfill({contentType:'application/json', body:fs.readFileSync('custom_components/visual_template_builder/frontend/mdi-icons.json','utf8')})
+    : route.fulfill({contentType:'text/html', body:'<html><body style="margin:0"><visual-template-builder-panel></visual-template-builder-panel></body></html>'}));
+  await page.goto('http://vtb.test/');
   await page.addScriptTag({content:fs.readFileSync('custom_components/visual_template_builder/frontend/panel.js','utf8')});
   await page.evaluate(() => {
     window.calls=[]; window.defs=[]; window.rev=0;
@@ -234,16 +238,25 @@ if (screenshotDir) fs.mkdirSync(screenshotDir, {recursive:true});
   assert.equal(await page.locator('.expression.nested').getByLabel('Usa',{exact:true}).first().inputValue(),'math');
   await page.locator('.expression.nested').getByRole('button',{name:'+ Aggiungi valore',exact:true}).click();
   assert.equal(await page.evaluate(()=>document.querySelector('visual-template-builder-panel').draft.expression.args[0].args.length),3);
-  // Icon field: live preview state, quick picks and the backend's mdi: format.
+  // Icon picker: suggestions on focus, search by name or alias, keyboard choice and the backend's mdi: format.
   await page.getByText('Opzioni avanzate',{exact:true}).click();
   const iconInput=page.getByLabel('Icona',{exact:true});
-  await iconInput.fill('Flash');
-  assert.equal(await iconInput.getAttribute('aria-invalid'),'');
-  await page.locator('.icon-hint.error').waitFor();
-  await page.getByRole('button',{name:'mdi:solar-power',exact:true}).click();
+  await iconInput.click();
+  assert.equal(await page.locator('.icon-option .icon-name').first().textContent(),'mdi:flash');
+  await iconInput.fill('solar pan');
+  await page.locator('.icon-option',{hasText:'mdi:solar-panel'}).first().waitFor();
+  assert.equal(await page.locator('.icon-option .icon-name').first().textContent(),'mdi:solar-panel');
+  await iconInput.fill('lightning');
+  await page.locator('.icon-option',{hasText:'mdi:flash'}).first().waitFor();
+  // A search left unfinished never becomes the icon.
+  await page.getByLabel('Unità di misura',{exact:true}).click();
+  assert.equal(await iconInput.inputValue(),'');
+  assert.equal(await page.evaluate(()=>document.querySelector('visual-template-builder-panel').draft.icon),'');
+  await iconInput.fill('solar-power');
+  await page.locator('.icon-name',{hasText:/^mdi:solar-power$/}).waitFor();
+  await iconInput.press('Enter');
   assert.equal(await iconInput.inputValue(),'mdi:solar-power');
-  assert.equal(await iconInput.getAttribute('aria-invalid'),null);
-  assert.equal(await page.getByRole('button',{name:'mdi:solar-power',exact:true}).getAttribute('aria-pressed'),'true');
+  assert.equal(await page.locator('.icon-options').isHidden(),true);
   assert.equal(await page.evaluate(()=>document.querySelector('visual-template-builder-panel').draft.icon),'mdi:solar-power');
   // Versioning: the header shows the loaded release; a newer server version asks for a reload.
   await page.evaluate(()=>{const panel=document.querySelector('visual-template-builder-panel');panel.dirty=false;panel.cancel();panel.panel={config:{version:'0.3.0-aaaaaaaaaa'}};});

@@ -22,7 +22,7 @@ L'editor è diviso in tre passaggi numerati:
 1. **Nome e tipo:** assegna un nome e scegli il risultato tra le schede **Numero**, **Testo** o **Acceso / spento**, ognuna con un esempio.
 2. **Regola:** parti da un esempio rapido (es. *Converti unità (W → kW)*, *Sopra una soglia*) oppure scegli un'operazione. Ogni elemento può contenere un'entità, un valore fisso o un'altra operazione.
    Cerca le entità per nome o ID: l'elenco mostra nome, ID e valore attuale. In **Valore da leggere** scegli lo stato o uno degli attributi reali dell'entità.
-3. **Opzioni avanzate:** unità, icona (con anteprima mentre scrivi e icone suggerite), classi e comportamento quando il calcolo fallisce. Con **Copia da …** riprendi unità e classi dalla sorgente.
+3. **Opzioni avanzate:** unità, icona (cerca come in Home Assistant: scrivi parte del nome, es. “sol” o “lightning”, e scegli dall’elenco con anteprima), classi e comportamento quando il calcolo fallisce. Con **Copia da …** riprendi unità e classi dalla sorgente.
 
 - Controlla l'anteprima; su mobile il risultato resta visibile accanto a **Salva sensore**.
 - Salva: l'entità viene aggiunta subito. Le modifiche alle regole non ricaricano l'integrazione.
@@ -139,5 +139,7 @@ npm run test:panel
 ```
 
 Python tests exercise calculations, real Home Assistant entity/state/registry/storage behavior, reloads, failure policies and access control. The browser test uses mocked HA WebSocket responses to verify editor interactions and mobile layout. No tests connect to or control a production HA instance.
+
+The icon picker's name list (`frontend/mdi-icons.json`) is generated from [`@mdi/svg`](https://github.com/Templarian/MaterialDesign-SVG) (Apache-2.0) with `npm run build:icons`; icons themselves are drawn by Home Assistant.
 
 MIT licensed.
