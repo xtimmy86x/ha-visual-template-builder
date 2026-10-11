@@ -11,11 +11,16 @@ from .manager import BuilderManager
 from .websocket import register_commands
 
 PANEL_PATH = Path(__file__).parent / "frontend" / "panel.js"
+# Icon names for the panel's icon picker, regenerated with `npm run build:icons`.
+ICONS_PATH = Path(__file__).parent / "frontend" / "mdi-icons.json"
 
 
-def panel_version(path: Path = PANEL_PATH) -> str:
-    """Release plus content hash, so browsers fetch panel.js again whenever it changes."""
-    return f"{VERSION}-{hashlib.sha256(path.read_bytes()).hexdigest()[:10]}"
+def panel_version(*paths: Path) -> str:
+    """Release plus content hash, so browsers fetch the panel files again whenever they change."""
+    digest = hashlib.sha256()
+    for path in paths or (PANEL_PATH, ICONS_PATH):
+        digest.update(path.read_bytes())
+    return f"{VERSION}-{digest.hexdigest()[:10]}"
 
 
 async def async_setup_entry(hass, entry):
@@ -25,11 +30,9 @@ async def async_setup_entry(hass, entry):
     if not hass.data.get(f"{DOMAIN}_registered"):
         await hass.http.async_register_static_paths(
             [
-                StaticPathConfig(
-                    f"/{DOMAIN}/panel.js",
-                    str(PANEL_PATH),
-                    False,
-                )
+                StaticPathConfig(f"/{DOMAIN}/panel.js", str(PANEL_PATH), False),
+                # Requested with the panel version in its URL, so it can be cached.
+                StaticPathConfig(f"/{DOMAIN}/mdi-icons.json", str(ICONS_PATH), True),
             ]
         )
         register_commands(hass)

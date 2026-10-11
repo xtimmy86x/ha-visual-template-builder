@@ -8,7 +8,7 @@
 - Advanced options can copy unit and classes from the source entity; state classes have readable labels.
 - The save bar stays visible and shows the live result on mobile.
 - Nested rules are framed blocks with their own "Use" and operation fields instead of a hidden ⋯ menu; add buttons sit inside the block they extend.
-- The icon field shows a live preview while typing, offers one-click icons for the result type and flags names that are not mdi: icons.
+- Icon picker like Home Assistant's: typing searches all Material Design icon names and aliases, each result shows its icon, and partial searches never replace the chosen icon. The icon list ships with the integration and is cached with the panel version.
 - The panel URL is versioned with the release and a hash of `panel.js`, so browsers never reuse a stale cached panel; open tabs show a reload notice when the server has a newer panel.
 
 ## 0.3.0

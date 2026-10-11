@@ -2,6 +2,7 @@
 const DOMAIN = "visual_template_builder";
 // Version the server announced when this script was loaded (release plus content hash).
 let loadedVersion = null;
+let iconList = null;
 const TEXT = {
   it: {
     customValue: "Scrivi un altro valore…", goal: "Cosa vuoi ottenere?", inputKind: "Usa", calculation: "Un calcolo", comparison: "Un confronto", group: "Più condizioni", conditional: "Un risultato in base a una condizione", joinedText: "Un testo con più valori", inverted: "Una condizione invertita", counted: "Un conteggio",
@@ -43,7 +44,7 @@ const TEXT = {
     binaryShort: "Acceso / spento", examples: "Parti da un esempio:", advancedHelp: "Unità, icona, classi e cosa fare se una sorgente non è disponibile.",
     ex_convert: "Converti unità (W → kW)", ex_sum: "Somma di sensori", ex_difference: "Differenza tra sensori", ex_mean: "Media di sensori",
     ex_threshold: "Sopra una soglia", ex_state: "Entità in uno stato", ex_all: "Tutte le condizioni vere", ex_any: "Almeno una condizione vera",
-    when: "Quando", iconHelp: "Scegli un’icona o scrivi il nome, es. mdi:flash. Vuoto = icona predefinita.", iconInvalid: "Il nome deve iniziare con mdi: e usare solo lettere minuscole, numeri e trattini.",
+    when: "Quando", iconHelp: "Scrivi parte del nome in inglese (es. “flash”, “sun”) e scegli dall’elenco. Vuoto = icona predefinita.", iconSearch: "Cerca un’icona…", iconsLoading: "Caricamento icone…", noIcons: "Nessuna icona trovata.", iconsUnavailable: "Elenco icone non disponibile: puoi comunque scrivere il nome completo, es. mdi:flash.", moreIcons: "Altre {n} icone: continua a scrivere per restringere la ricerca.",
     updateAvailable: "È disponibile una nuova versione del pannello. Ricarica la pagina per usarla.", reload: "Ricarica",
   },
   en: {
@@ -86,7 +87,7 @@ const TEXT = {
     binaryShort: "On / off", examples: "Start from an example:", advancedHelp: "Unit, icon, classes and what to do when a source is unavailable.",
     ex_convert: "Convert units (W → kW)", ex_sum: "Sum of sensors", ex_difference: "Difference between sensors", ex_mean: "Average of sensors",
     ex_threshold: "Above a threshold", ex_state: "Entity in a state", ex_all: "All conditions true", ex_any: "At least one condition true",
-    when: "When", iconHelp: "Pick an icon or type its name, e.g. mdi:flash. Empty = default icon.", iconInvalid: "The name must start with mdi: and use only lowercase letters, numbers and hyphens.",
+    when: "When", iconHelp: "Type part of the name (e.g. “flash”, “sun”) and pick from the list. Empty = default icon.", iconSearch: "Search for an icon…", iconsLoading: "Loading icons…", noIcons: "No icon found.", iconsUnavailable: "Icon list unavailable: you can still type the full name, e.g. mdi:flash.", moreIcons: "{n} more icons: keep typing to narrow the search.",
     updateAvailable: "A new version of the panel is available. Reload the page to use it.", reload: "Reload",
   },
 };
@@ -205,7 +206,7 @@ const CSS = `
 
 :host{display:block;height:100%;overflow:auto;background:var(--primary-background-color,#f5f7fa);color:var(--primary-text-color,#18283b);font-family:var(--paper-font-body1_-_font-family,system-ui);--accent:var(--primary-color,#039be5)}
 *{box-sizing:border-box}header{display:flex;align-items:center;gap:12px;padding:16px 24px;background:var(--card-background-color,white);border-bottom:1px solid var(--divider-color,#dde3eb);position:sticky;top:0;z-index:2}header strong{font-size:18px}header small{margin-left:auto;color:var(--secondary-text-color,#64748b)}
-main{max-width:1180px;margin:auto;padding:28px 24px 60px}h1{font-size:30px;margin:0 0 8px}h2{font-size:19px;margin:0 0 18px}p{color:var(--secondary-text-color,#64748b);line-height:1.55}.toolbar,.row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.toolbar{justify-content:space-between;margin:24px 0}.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}.card,.section{background:var(--card-background-color,white);border:1px solid var(--divider-color,#dde3eb);border-radius:16px;padding:22px}.card h2{margin:12px 0 6px}.card small{overflow-wrap:anywhere}.card .value{font-size:26px;margin:22px 0}.badge{display:inline-block;padding:5px 9px;border-radius:7px;background:var(--secondary-background-color,#edf5fb);font-size:12px;color:var(--accent)}button{font:inherit;cursor:pointer;border-radius:9px;min-height:40px;border:1px solid var(--divider-color,#d7e0e9);padding:9px 14px;background:var(--card-background-color,white);color:var(--primary-text-color,#18283b)}button:hover{filter:brightness(.96)}button.primary{background:var(--accent);color:white;border-color:var(--accent)}button.danger{color:var(--error-color,#db4437)}button:disabled{opacity:.5;cursor:wait}button:focus-visible,input:focus,select:focus{outline:2px solid var(--accent);outline-offset:2px}input,select{width:100%;min-width:0;background:var(--card-background-color,white);color:var(--primary-text-color,#18283b);border:1px solid var(--divider-color,#cbd5e1);border-radius:8px;padding:11px;font:inherit;min-height:44px}label{display:block;min-width:0}label>span{display:block;font-size:13px;font-weight:600;margin:0 0 7px}.fields{display:grid;grid-template-columns:1fr 1fr;gap:16px}.editor{display:grid;grid-template-columns:minmax(0,1fr) 290px;gap:20px;align-items:start}.section{margin-bottom:16px}.preview{position:sticky;top:88px;border-top:4px solid var(--accent)}.preview .result{font-size:28px;overflow-wrap:anywhere;margin:14px 0}.preview small{display:block;overflow-wrap:anywhere}.empty{text-align:center;padding:64px 24px}.empty .symbol{font-size:50px;color:var(--accent)}.error{color:var(--error-color,#db4437);overflow-wrap:anywhere}.icon-field{grid-column:1/-1}.icon-input{display:flex;gap:10px;align-items:center}.icon-preview{flex:none;display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:10px;background:var(--secondary-background-color,#edf5fb);color:var(--accent);font-weight:700;--mdc-icon-size:26px}.icon-preview.empty{border:1px dashed var(--divider-color,#cbd5e1);background:transparent}.icon-picks{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}button.icon-pick{min-height:38px;width:42px;padding:0;display:inline-flex;align-items:center;justify-content:center;color:var(--primary-text-color,#18283b);--mdc-icon-size:22px}button.icon-pick[aria-pressed="true"]{border-color:var(--accent);color:var(--accent);box-shadow:0 0 0 1px var(--accent)}.icon-hint{display:block;margin-top:8px}.icon-hint.error{color:var(--error-color,#db4437)}input[aria-invalid]{border-color:var(--error-color,#db4437)}
+main{max-width:1180px;margin:auto;padding:28px 24px 60px}h1{font-size:30px;margin:0 0 8px}h2{font-size:19px;margin:0 0 18px}p{color:var(--secondary-text-color,#64748b);line-height:1.55}.toolbar,.row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.toolbar{justify-content:space-between;margin:24px 0}.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}.card,.section{background:var(--card-background-color,white);border:1px solid var(--divider-color,#dde3eb);border-radius:16px;padding:22px}.card h2{margin:12px 0 6px}.card small{overflow-wrap:anywhere}.card .value{font-size:26px;margin:22px 0}.badge{display:inline-block;padding:5px 9px;border-radius:7px;background:var(--secondary-background-color,#edf5fb);font-size:12px;color:var(--accent)}button{font:inherit;cursor:pointer;border-radius:9px;min-height:40px;border:1px solid var(--divider-color,#d7e0e9);padding:9px 14px;background:var(--card-background-color,white);color:var(--primary-text-color,#18283b)}button:hover{filter:brightness(.96)}button.primary{background:var(--accent);color:white;border-color:var(--accent)}button.danger{color:var(--error-color,#db4437)}button:disabled{opacity:.5;cursor:wait}button:focus-visible,input:focus,select:focus{outline:2px solid var(--accent);outline-offset:2px}input,select{width:100%;min-width:0;background:var(--card-background-color,white);color:var(--primary-text-color,#18283b);border:1px solid var(--divider-color,#cbd5e1);border-radius:8px;padding:11px;font:inherit;min-height:44px}label{display:block;min-width:0}label>span{display:block;font-size:13px;font-weight:600;margin:0 0 7px}.fields{display:grid;grid-template-columns:1fr 1fr;gap:16px}.editor{display:grid;grid-template-columns:minmax(0,1fr) 290px;gap:20px;align-items:start}.section{margin-bottom:16px}.preview{position:sticky;top:88px;border-top:4px solid var(--accent)}.preview .result{font-size:28px;overflow-wrap:anywhere;margin:14px 0}.preview small{display:block;overflow-wrap:anywhere}.empty{text-align:center;padding:64px 24px}.empty .symbol{font-size:50px;color:var(--accent)}.error{color:var(--error-color,#db4437);overflow-wrap:anywhere}.icon-field{grid-column:1/-1}.icon-input{display:flex;gap:10px;align-items:center}.icon-preview{flex:none;display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:10px;background:var(--secondary-background-color,#edf5fb);color:var(--accent);font-weight:700;--mdc-icon-size:26px}.icon-preview.no-icon{border:1px dashed var(--divider-color,#cbd5e1);background:transparent}.icon-picker{position:relative}.icon-options .entity-icon{--mdc-icon-size:20px;color:var(--primary-text-color,#18283b)}.icon-name{font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.icon-hint{display:block;margin-top:8px}
 .update-notice{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}.notice{padding:12px 16px;background:var(--card-background-color,white);border-left:4px solid var(--accent);margin-bottom:16px;border-radius:6px}.actions{display:flex;gap:10px;margin-top:20px}.muted,small{color:var(--secondary-text-color,#64748b)}summary{cursor:pointer;font-weight:600;margin-bottom:18px}.source-list{margin-top:20px;border-top:1px solid var(--divider-color,#ddd);padding-top:14px}.search{max-width:320px}.menu{padding:8px;border:0;font-size:22px}.more{margin-top:10px} @media(max-width:850px){.editor{grid-template-columns:1fr}.preview{position:static}.fields{grid-template-columns:1fr}main{padding:20px 14px 40px}header{padding:12px 14px}.section{padding:16px}h1{font-size:25px}.toolbar>div{width:100%}.search{max-width:none}}
 `;
 class VisualTemplateBuilderPanel extends HTMLElement {
@@ -477,36 +478,103 @@ class VisualTemplateBuilderPanel extends HTMLElement {
       element("span", {class: "quick-result", "aria-hidden": "true"})));
     this.previewBox = element("aside", {class: "section preview", "aria-live": "polite"}, element("h2", {}, this.t("preview")), element("p", {}, this.t("pending"))); layout.append(this.previewBox);
     const units = new Set(Object.values(this._hass.states).map(state => state.attributes.unit_of_measurement).filter(unit => typeof unit === "string"));
-    main.append(element("datalist", {id: "vtb-units"}, ...[...units].sort().map(unit => element("option", {value: unit}))),
-      element("datalist", {id: "vtb-icons"}, ...[...new Set(Object.values(ICONS).flat())].sort().map(icon => element("option", {value: icon}))));
+    main.append(element("datalist", {id: "vtb-units"}, ...[...units].sort().map(unit => element("option", {value: unit}))));
     this.updateMappingLive(); this.updateCopyProperties(); this.queuePreview();
   }
   iconElement(icon) {
     if (!customElements.get("ha-icon")) return element("span", {class: "icon-fallback"}, icon ? "◆" : "");
     const node = element("ha-icon", {icon}); node.icon = icon; return node;
   }
-  // Icon name with a live preview and one-click suggestions for the result type.
+  // Full Material Design icon list, loaded once on first use and cached by the versioned URL.
+  loadIcons() {
+    iconList ??= fetch(`/${DOMAIN}/mdi-icons.json?v=${encodeURIComponent(loadedVersion || "")}`, {credentials: "same-origin"})
+      .then(response => response.ok ? response.json() : Promise.reject(new Error(response.statusText)))
+      .then(list => list.map(entry => Array.isArray(entry) ? {name: entry[0], aliases: entry.slice(1)} : {name: entry, aliases: []}))
+      .catch(error => { iconList = null; throw error; });
+    return iconList;
+  }
+  // Every typed word must appear in the icon name or one of its aliases; name matches rank first.
+  searchIcons(icons, query) {
+    const words = query.trim().toLowerCase().replace(/^mdi:/, "").split(/[\s-]+/).filter(Boolean);
+    if (!words.length) return [];
+    const [first] = words;
+    const found = [];
+    for (const {name, aliases} of icons) {
+      if (!words.every(word => name.includes(word) || aliases.some(alias => alias.includes(word)))) continue;
+      const parts = name.split("-");
+      const score = name === words.join("-") ? 0 : name.startsWith(first) ? 1 : parts.some(part => part.startsWith(first)) ? 2 : name.includes(first) ? 3 : 4;
+      found.push({name, score});
+    }
+    return found.sort((a, b) => a.score - b.score || a.name.localeCompare(b.name)).map(icon => icon.name);
+  }
+  // Icon picker like Home Assistant's: type part of a name and choose from matching icons with previews.
   iconField() {
     const d = this.draft;
+    const id = `vtb-icons-${++this.inputCounter}`;
     const preview = element("span", {class: "icon-preview", "aria-hidden": "true"});
-    const hint = element("small", {class: "icon-hint"});
-    const picks = element("div", {class: "icon-picks"});
-    const input = this.input(d.icon, value => { d.icon = value.trim(); this.touch(); paint(); }, {placeholder: "mdi:flash", list: "vtb-icons", spellcheck: "false", autocomplete: "off", "aria-label": this.t("icon")});
+    const list = element("div", {class: "entity-options icon-options", role: "listbox", id, hidden: "", onmousedown: event => event.preventDefault()});
+    const input = element("input", {role: "combobox", autocomplete: "off", spellcheck: "false", "aria-autocomplete": "list", "aria-expanded": "false", "aria-controls": id, placeholder: this.t("iconSearch"), "aria-label": this.t("icon")});
+    input.value = d.icon || "";
+    let matches = []; let active = 0; let request = 0;
+    const hint = element("small", {class: "icon-hint"}, this.t("iconHelp"));
     const paint = () => {
-      const valid = !d.icon || ICON_PATTERN.test(d.icon);
-      preview.classList.toggle("empty", !d.icon);
-      preview.replaceChildren(valid && d.icon ? this.iconElement(d.icon) : element("span", {}, d.icon ? "?" : ""));
-      input.toggleAttribute("aria-invalid", !valid);
-      hint.textContent = this.t(valid ? "iconHelp" : "iconInvalid"); hint.classList.toggle("error", !valid);
-      for (const pick of picks.children) pick.setAttribute("aria-pressed", String(pick.dataset.icon === d.icon));
+      preview.classList.toggle("no-icon", !d.icon);
+      preview.replaceChildren(d.icon ? this.iconElement(d.icon) : "");
     };
-    for (const icon of ICONS[d.kind] || ICONS.number) {
-      const pick = this.button(this.iconElement(icon), () => { d.icon = icon; input.value = icon; this.touch(); paint(); }, "icon-pick");
-      pick.dataset.icon = icon; pick.title = icon; pick.setAttribute("aria-label", icon);
-      picks.append(pick);
-    }
+    const choose = name => {
+      d.icon = name; input.value = name; close(); this.touch(); paint();
+    };
+    const highlight = index => {
+      active = index;
+      list.querySelectorAll("[role=option]").forEach((option, i) => {
+        option.setAttribute("aria-selected", String(i === active));
+        if (i === active) { input.setAttribute("aria-activedescendant", option.id); option.scrollIntoView?.({block: "nearest"}); }
+      });
+    };
+    const show = (names, message = "") => {
+      matches = names.slice(0, 60);
+      list.replaceChildren(...matches.map((name, index) => {
+        const option = element("div", {class: "entity-option icon-option", role: "option", id: `${id}-${index}`, onmousedown: event => { event.preventDefault(); choose(name); }},
+          element("span", {class: "entity-icon", "aria-hidden": "true"}, this.iconElement(name)), element("span", {class: "icon-name"}, name));
+        option.addEventListener("mousemove", () => { if (active !== index) highlight(index); });
+        return option;
+      }));
+      if (message) list.append(element("p", {class: "entity-hint"}, message));
+      else if (names.length > matches.length) list.append(element("p", {class: "entity-hint"}, this.t("moreIcons").replace("{n}", names.length - matches.length)));
+      list.hidden = false; input.setAttribute("aria-expanded", "true"); highlight(0);
+    };
+    const open = async () => {
+      const query = input.value; const current = ++request;
+      if (!query.trim().replace(/^mdi:?/, "")) { show(ICONS[d.kind] || ICONS.number); return; }
+      show([], this.t("iconsLoading"));
+      try {
+        const icons = await this.loadIcons();
+        if (current !== request || !input.isConnected) return;
+        const found = this.searchIcons(icons, query).map(name => `mdi:${name}`);
+        show(found, found.length ? "" : this.t("noIcons"));
+      } catch {
+        if (current === request) show([], this.t("iconsUnavailable"));
+      }
+    };
+    const close = () => { list.hidden = true; input.setAttribute("aria-expanded", "false"); input.removeAttribute("aria-activedescendant"); };
+    input.addEventListener("focus", open);
+    // Typed text only searches; the icon changes when a full mdi: name is typed or one is picked.
+    input.addEventListener("input", () => {
+      const typed = input.value.trim();
+      if ((!typed || ICON_PATTERN.test(typed)) && typed !== d.icon) { d.icon = typed; this.touch(); paint(); }
+      open();
+    });
+    input.addEventListener("keydown", event => {
+      if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+        event.preventDefault(); if (list.hidden) { open(); return; }
+        if (matches.length) highlight((active + (event.key === "ArrowDown" ? 1 : matches.length - 1)) % matches.length);
+      } else if (event.key === "Enter" && !list.hidden && matches[active]) { event.preventDefault(); choose(matches[active]); }
+      else if (event.key === "Escape") { event.preventDefault(); close(); }
+    });
+    input.addEventListener("blur", () => { close(); input.value = d.icon || ""; });
     paint();
-    return element("div", {class: "icon-field"}, element("label", {}, element("span", {}, this.t("icon")), element("div", {class: "icon-input"}, preview, input)), picks, hint);
+    return element("div", {class: "icon-field"}, element("div", {class: "picker-field"}, element("span", {}, this.t("icon")),
+      element("div", {class: "icon-picker"}, element("div", {class: "icon-input"}, preview, input), list)), hint);
   }
   setKind(value) {
     const d = this.draft;

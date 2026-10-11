@@ -3,9 +3,11 @@
   "version": "0.3.0",
   "private": true,
   "scripts": {
-    "test:panel": "node tests/panel.test.cjs"
+    "test:panel": "node tests/panel.test.cjs",
+    "build:icons": "node scripts/build-icons.cjs"
   },
   "devDependencies": {
+    "@mdi/svg": "7.4.47",
     "playwright": "1.51.1"
   }
 }

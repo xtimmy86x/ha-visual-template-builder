@@ -13,7 +13,7 @@ from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import Unauthorized
 from homeassistant.helpers import entity_registry as er
 
-from custom_components.visual_template_builder import PANEL_PATH, panel_version
+from custom_components.visual_template_builder import ICONS_PATH, PANEL_PATH, panel_version
 from custom_components.visual_template_builder.const import DOMAIN, VERSION
 from custom_components.visual_template_builder.engine import InvalidExpression
 
@@ -217,9 +217,19 @@ async def test_panel_url_changes_with_panel_content(loaded, tmp_path):
     assert version.startswith(f"{VERSION}-")
     assert panel.config["version"] == version
     assert panel.config["_panel_custom"]["module_url"] == f"/{DOMAIN}/panel.js?v={version}"
+    assert panel_version(PANEL_PATH, ICONS_PATH) == version
+    static = {
+        path.url_path: path for path in hass.http.async_register_static_paths.await_args[0][0]
+    }
+    assert static[f"/{DOMAIN}/mdi-icons.json"].path == str(ICONS_PATH)
+    assert static[f"/{DOMAIN}/mdi-icons.json"].cache_headers is True
+    assert static[f"/{DOMAIN}/panel.js"].cache_headers is False
     copy = tmp_path / "panel.js"
     copy.write_text(PANEL_PATH.read_text() + "\n// changed\n")
-    assert panel_version(copy) != version
+    assert panel_version(copy, ICONS_PATH) != version
+    icons = tmp_path / "mdi-icons.json"
+    icons.write_text('["flash"]\n')
+    assert panel_version(PANEL_PATH, icons) != version
 
 
 def test_manifest_version_matches_constant():
