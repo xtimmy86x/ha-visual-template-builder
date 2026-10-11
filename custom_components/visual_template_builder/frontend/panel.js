@@ -3,7 +3,7 @@ const DOMAIN = "visual_template_builder";
 const TEXT = {
   it: {
     customValue: "Scrivi un altro valore…", goal: "Cosa vuoi ottenere?", inputKind: "Usa", calculation: "Un calcolo", comparison: "Un confronto", group: "Più condizioni", conditional: "Un risultato in base a una condizione", joinedText: "Un testo con più valori", inverted: "Una condizione invertita", counted: "Un conteggio",
-    fixedNumber: "Numero", fixedText: "Testo", fixedBoolean: "Sì / No", valueLabel: "Valore", compareLabel: "Confronto", changeRule: "Cambia tipo di regola", attributeChoice: "Usa un attributo", summary: "La regola in parole",
+    fixedNumber: "Numero", fixedText: "Testo", fixedBoolean: "Sì / No", valueLabel: "Valore", compareLabel: "Confronto", changeRule: "Cambia tipo di regola", summary: "La regola in parole",
     show: "Mostra", elseShow: "Altrimenti mostra", yes: "Sì", no: "No", addValue: "Aggiungi valore", addCondition: "Aggiungi condizione", allConditions: "Tutte queste condizioni sono vere", anyCondition: "Almeno una di queste condizioni è vera", countHelp: "Conta quante di queste condizioni sono vere.",
     negateHelp: "La seguente condizione deve essere falsa", chooseValue: "Scegli un valore", genericHelp: "Scegli i valori da usare e completa la regola. Puoi combinare calcoli e condizioni quando serve.",
     eqWord: "è uguale a", neWord: "è diverso da", gtWord: "è maggiore di", gteWord: "è almeno", ltWord: "è minore di", lteWord: "è al massimo", nearWord: "è uguale entro una tolleranza a", andWord: "e", orWord: "oppure", sourcePlaceholder: "Cerca un’entità…",
@@ -26,16 +26,20 @@ const TEXT = {
     state: "Classe di stato", none: "Nessuna", missing: "Se il calcolo non è disponibile", unavailable: "Rendi indisponibile",
     keep: "Mantieni l’ultimo valore valido", fallback: "Usa un valore sostitutivo", fallbackValue: "Valore sostitutivo",
     keepHelp: "Il valore conservato avrà l’attributo stale=true. Prima del primo valore valido il sensore resta indisponibile.",
-    source: "Entità", attribute: "Attributo (vuoto = stato)", constant: "Valore fisso", add: "Aggiungi elemento", remove: "Rimuovi",
+    source: "Entità", attribute: "Valore da leggere", constant: "Valore fisso", add: "Aggiungi elemento", remove: "Rimuovi",
     then: "Allora", otherwise: "Altrimenti", condition: "Se", tolerance: "Tolleranza", digits: "Decimali",
     settings: "Proprietà e disponibilità", sources: "Sorgenti", live: "Valore attuale", refresh: "Aggiorna elenco", copy: "copia",
     retained: "In esecuzione verrà mantenuto l’ultimo valore valido, se presente.", saved: "Sensore salvato", error: "Errore",
     export: "Esporta configurazione", search: "Cerca un sensore…", typeFixed: "Il tipo non è modificabile dopo la creazione.",
     choose: "Seleziona un’entità…", operation: "Operazione", noSources: "Nessuna sorgente: valore costante", pending: "Calcolo…",
+    changeEntity: "Cambia", readValue: "Valore da leggere", stateValue: "Stato", noMatches: "Nessuna entità trovata. Puoi scrivere l’ID completo, ad esempio sensor.consumo.",
+    moreMatches: "Altre {n} entità: continua a scrivere per restringere la ricerca.", notFound: "Entità non trovata in Home Assistant",
+    copyProps: "Copia da {name}", copyPropsHelp: "La sorgente usa queste proprietà:",
+    state_class_measurement: "Misura istantanea", state_class_total: "Totale", state_class_total_increasing: "Totale crescente",
   },
   en: {
     customValue: "Enter another value…", goal: "What do you want to create?", inputKind: "Use", calculation: "A calculation", comparison: "A comparison", group: "Multiple conditions", conditional: "A result based on a condition", joinedText: "Text with multiple values", inverted: "An inverted condition", counted: "A count",
-    fixedNumber: "Number", fixedText: "Text", fixedBoolean: "Yes / No", valueLabel: "Value", compareLabel: "Comparison", changeRule: "Change rule type", attributeChoice: "Use an attribute", summary: "Your rule in words",
+    fixedNumber: "Number", fixedText: "Text", fixedBoolean: "Yes / No", valueLabel: "Value", compareLabel: "Comparison", changeRule: "Change rule type", summary: "Your rule in words",
     show: "Show", elseShow: "Otherwise show", yes: "Yes", no: "No", addValue: "Add value", addCondition: "Add condition", allConditions: "All these conditions are true", anyCondition: "At least one of these conditions is true", countHelp: "Count how many of these conditions are true.",
     negateHelp: "The following condition must be false", chooseValue: "Choose a value", genericHelp: "Choose the values and complete the rule. Combine calculations and conditions when needed.",
     eqWord: "equals", neWord: "does not equal", gtWord: "is greater than", gteWord: "is at least", ltWord: "is less than", lteWord: "is at most", nearWord: "is within tolerance of", andWord: "and", orWord: "or", sourcePlaceholder: "Search for an entity…",
@@ -58,12 +62,16 @@ const TEXT = {
     state: "State class", none: "None", missing: "When evaluation is unavailable", unavailable: "Mark unavailable",
     keep: "Keep last valid value", fallback: "Use a fallback value", fallbackValue: "Fallback value",
     keepHelp: "Retained values have stale=true. Until the first valid value, the sensor stays unavailable.",
-    source: "Entity", attribute: "Attribute (empty = state)", constant: "Constant", add: "Add operand", remove: "Remove",
+    source: "Entity", attribute: "Value to read", constant: "Constant", add: "Add operand", remove: "Remove",
     then: "Then", otherwise: "Otherwise", condition: "If", tolerance: "Tolerance", digits: "Decimals",
     settings: "Properties and availability", sources: "Sources", live: "Current value", refresh: "Refresh list", copy: "copy",
     retained: "At runtime the last valid value will be retained, if one exists.", saved: "Sensor saved", error: "Error",
     export: "Export configuration", search: "Search sensors…", typeFixed: "The result type cannot change after creation.",
     choose: "Select an entity…", operation: "Operation", noSources: "No sources: constant value", pending: "Calculating…",
+    changeEntity: "Change", readValue: "Value to read", stateValue: "State", noMatches: "No entity found. You can type the full ID, for example sensor.consumption.",
+    moreMatches: "{n} more entities: keep typing to narrow the search.", notFound: "Entity not found in Home Assistant",
+    copyProps: "Copy from {name}", copyPropsHelp: "The source uses these properties:",
+    state_class_measurement: "Measurement", state_class_total: "Total", state_class_total_increasing: "Total increasing",
   },
 };
 const OPS = {
@@ -138,10 +146,12 @@ function element(tag, attrs = {}, ...children) {
   return node;
 }
 const CSS = `
-.rule-goal{margin-bottom:18px}.expression{min-width:0}.expression-toolbar{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:12px}.expression-toolbar>label{flex:1}.change-rule{position:relative;margin-left:auto}.change-rule>summary{font-size:20px;list-style:none;margin:0;padding:0 8px}.change-rule[open]{min-width:200px}.change-rule select{margin-top:8px}.value-control{min-width:0;background:var(--secondary-background-color,#f5f8fb);padding:10px;border-radius:9px}.value-line{display:grid;grid-template-columns:105px minmax(0,1fr);gap:8px}.value-line>select{font-size:13px;padding:8px}.value-line input{min-width:0}.attribute-options{margin-top:6px}.attribute-options summary{font-size:12px;font-weight:400;color:var(--secondary-text-color,#64748b);margin-bottom:6px}.attribute-options input{margin-top:4px}.comparison-line{display:grid;grid-template-columns:minmax(0,1fr) minmax(140px,.65fr) minmax(0,1fr);gap:10px;align-items:start}.comparison-line>.compare-operator{margin-top:10px}.comparison-line .value-line{grid-template-columns:1fr}.comparison-line .value-line>select{border:none;background:transparent;padding:0 2px;min-height:26px}.condition-section{display:grid;grid-template-columns:95px minmax(0,1fr);gap:12px;padding:16px 0;border-top:1px solid var(--divider-color,#dde3eb)}.condition-section:first-child{border-top:0}.sentence-label{font-weight:650;color:var(--accent);padding-top:14px}.rule-item{display:flex;align-items:start;gap:8px;padding:10px 0}.rule-item>.expression{flex:1;min-width:0}.rule-item>.remove-value{margin-top:10px}.math-join{display:block;font-size:20px;color:var(--accent);text-align:center}.rule-summary{margin-top:20px;padding:14px 16px;border-radius:10px;background:var(--secondary-background-color,#f5f8fb);font-size:14px;line-height:1.6;overflow-wrap:anywhere}.rule-summary p{margin:6px 0 0;color:var(--primary-text-color,#18283b)}.rule-caption{font-size:13px;color:var(--secondary-text-color,#64748b);margin-bottom:6px}.expression .expression .expression{margin-left:0}.rule-inline-option{margin-top:12px;max-width:280px}
-@media(max-width:1050px){.comparison-line{grid-template-columns:1fr}.comparison-line>.compare-operator{margin:0;max-width:100%}.comparison-line .value-line{grid-template-columns:105px minmax(0,1fr)}.comparison-line .value-line>select{background:var(--card-background-color,white);padding:8px;border:1px solid var(--divider-color,#cbd5e1);min-height:44px}}
-@media(max-width:600px){.condition-section{grid-template-columns:1fr;gap:8px}.sentence-label{padding-top:0}.value-line input{font-size:16px}.rule-item{gap:5px}.rule-goal select{font-size:14px}}
+.rule-goal{margin-bottom:18px}.expression{min-width:0}.expression-toolbar{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:12px}.expression-toolbar>label{flex:1}.change-rule{position:relative;margin-left:auto}.change-rule>summary{font-size:20px;list-style:none;margin:0;padding:0 8px}.change-rule[open]{min-width:200px}.change-rule select{margin-top:8px}.value-control{min-width:0;background:var(--secondary-background-color,#f5f8fb);padding:10px;border-radius:9px}.value-line{display:grid;grid-template-columns:105px minmax(0,1fr);gap:8px}.value-line>select{font-size:13px;padding:8px}.value-line input{min-width:0}.attribute-line{margin-top:8px}.attribute-line label>span{font-size:12px;font-weight:500;color:var(--secondary-text-color,#64748b);margin-bottom:4px}.attribute-line select{min-height:38px;padding:7px 9px;font-size:14px}.comparison-line{display:grid;grid-template-columns:minmax(0,1fr) minmax(140px,.65fr) minmax(0,1fr);gap:10px;align-items:start}.comparison-line>.compare-operator{margin-top:10px}.comparison-line .value-line{grid-template-columns:1fr}.comparison-line .value-line>select:first-child{border:none;background:transparent;padding:0 2px;min-height:26px}.condition-section{display:grid;grid-template-columns:95px minmax(0,1fr);gap:12px;padding:16px 0;border-top:1px solid var(--divider-color,#dde3eb)}.condition-section:first-child{border-top:0}.sentence-label{font-weight:650;color:var(--accent);padding-top:14px}.rule-item{display:flex;align-items:start;gap:8px;padding:10px 0}.rule-item>.expression{flex:1;min-width:0}.rule-item>.remove-value{margin-top:10px}.math-join{display:block;font-size:20px;color:var(--accent);text-align:center}.rule-summary{margin-top:20px;padding:14px 16px;border-radius:10px;background:var(--secondary-background-color,#f5f8fb);font-size:14px;line-height:1.6;overflow-wrap:anywhere}.rule-summary p{margin:6px 0 0;color:var(--primary-text-color,#18283b)}.rule-caption{font-size:13px;color:var(--secondary-text-color,#64748b);margin-bottom:6px}.expression .expression .expression{margin-left:0}.rule-inline-option{margin-top:12px;max-width:280px}
+@media(max-width:1050px){.comparison-line{grid-template-columns:1fr}.comparison-line>.compare-operator{margin:0;max-width:100%}.comparison-line .value-line{grid-template-columns:105px minmax(0,1fr)}.comparison-line .value-line>select:first-child{background:var(--card-background-color,white);padding:8px;border:1px solid var(--divider-color,#cbd5e1);min-height:44px}}
+@media(max-width:600px){.value-line:has(.entity-picker){grid-template-columns:1fr}.condition-section{grid-template-columns:1fr;gap:8px}.sentence-label{padding-top:0}.value-line input{font-size:16px}.rule-item{gap:5px}.rule-goal select{font-size:14px}}
 
+.entity-picker{position:relative;min-width:0;container:picker/inline-size}.entity-chip{display:flex;align-items:center;gap:10px;min-height:44px;padding:6px 6px 6px 8px;border:1px solid var(--divider-color,#cbd5e1);border-radius:8px;background:var(--card-background-color,white);min-width:0}.entity-chip.unknown{border-color:var(--warning-color,#f59e0b)}.entity-icon{flex:none;display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:50%;background:var(--secondary-background-color,#edf5fb);color:var(--accent);font-weight:700;font-size:14px;--mdc-icon-size:18px}.entity-text{display:flex;flex-direction:column;flex:1;min-width:0;line-height:1.25}.entity-text strong{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.entity-text small{font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.entity-state{flex:none;max-width:40%;font-size:13px;font-weight:600;color:var(--primary-text-color,#18283b);background:var(--secondary-background-color,#f1f5f9);padding:4px 8px;border-radius:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.entity-chip .entity-change{flex:none;min-height:32px;padding:4px 10px;font-size:13px;color:var(--accent);border-color:transparent;background:transparent}.entity-options{position:absolute;z-index:5;left:0;right:0;top:calc(100% + 4px);max-height:330px;overflow:auto;background:var(--card-background-color,white);border:1px solid var(--divider-color,#cbd5e1);border-radius:10px;box-shadow:0 10px 28px rgba(15,23,42,.18);padding:4px}.entity-option{display:flex;align-items:center;gap:10px;padding:7px 8px;border-radius:7px;cursor:pointer;min-width:0}.entity-option[aria-selected="true"]{background:var(--secondary-background-color,#edf5fb)}.entity-option .entity-state{background:transparent;font-weight:500;color:var(--secondary-text-color,#64748b)}.entity-hint{margin:6px 8px;font-size:13px}.picker-field>span{display:block;font-size:13px;font-weight:600;margin:0 0 7px}@container picker (max-width:340px){.entity-chip{flex-wrap:wrap;row-gap:4px}.entity-text{flex-basis:calc(100% - 40px)}.entity-chip .entity-state{margin-left:40px;max-width:calc(100% - 120px)}.entity-chip .entity-change{margin-left:auto}}
+.copy-properties{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin:0 0 18px;padding:12px 14px;border-radius:10px;background:var(--secondary-background-color,#f5f8fb);font-size:14px}
 .mode-choice{display:flex;gap:8px;margin:12px 0 18px;flex-wrap:wrap}.mode-choice button[aria-pressed="true"]{background:var(--accent);color:white;border-color:var(--accent)}
 .mapping-intro{margin-top:0}.mapping-current{display:block;margin:12px 0 20px;color:var(--secondary-text-color,#64748b)}
 .mapping-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) auto;gap:12px;align-items:end;padding:14px 0;border-top:1px solid var(--divider-color,#dde3eb)}
@@ -150,7 +160,7 @@ const CSS = `
 
 :host{display:block;height:100%;overflow:auto;background:var(--primary-background-color,#f5f7fa);color:var(--primary-text-color,#18283b);font-family:var(--paper-font-body1_-_font-family,system-ui);--accent:var(--primary-color,#039be5)}
 *{box-sizing:border-box}header{display:flex;align-items:center;gap:12px;padding:16px 24px;background:var(--card-background-color,white);border-bottom:1px solid var(--divider-color,#dde3eb);position:sticky;top:0;z-index:2}header strong{font-size:18px}header small{margin-left:auto;color:var(--secondary-text-color,#64748b)}
-main{max-width:1180px;margin:auto;padding:28px 24px 60px}h1{font-size:30px;margin:0 0 8px}h2{font-size:19px;margin:0 0 18px}p{color:var(--secondary-text-color,#64748b);line-height:1.55}.toolbar,.row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.toolbar{justify-content:space-between;margin:24px 0}.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}.card,.section{background:var(--card-background-color,white);border:1px solid var(--divider-color,#dde3eb);border-radius:16px;padding:22px}.card h2{margin:12px 0 6px}.card small{overflow-wrap:anywhere}.card .value{font-size:26px;margin:22px 0}.badge{display:inline-block;padding:5px 9px;border-radius:7px;background:var(--secondary-background-color,#edf5fb);font-size:12px;color:var(--accent)}button{font:inherit;cursor:pointer;border-radius:9px;min-height:40px;border:1px solid var(--divider-color,#d7e0e9);padding:9px 14px;background:var(--card-background-color,white);color:var(--primary-text-color,#18283b)}button:hover{filter:brightness(.96)}button.primary{background:var(--accent);color:white;border-color:var(--accent)}button.danger{color:var(--error-color,#db4437)}button:disabled{opacity:.5;cursor:wait}button:focus-visible,input:focus,select:focus{outline:2px solid var(--accent);outline-offset:2px}input,select{width:100%;min-width:0;background:var(--card-background-color,white);color:var(--primary-text-color,#18283b);border:1px solid var(--divider-color,#cbd5e1);border-radius:8px;padding:11px;font:inherit;min-height:44px}label{display:block;min-width:0}label>span{display:block;font-size:13px;font-weight:600;margin:0 0 7px}.fields{display:grid;grid-template-columns:1fr 1fr;gap:16px}.editor{display:grid;grid-template-columns:minmax(0,1fr) 290px;gap:20px;align-items:start}.section{margin-bottom:16px}.preview{position:sticky;top:88px;border-top:4px solid var(--accent)}.preview .result{font-size:28px;overflow-wrap:anywhere;margin:14px 0}.preview small{display:block;overflow-wrap:anywhere}.source-live{display:block;color:var(--secondary-text-color,#64748b);font-size:12px;margin-top:7px;overflow-wrap:anywhere}.empty{text-align:center;padding:64px 24px}.empty .symbol{font-size:50px;color:var(--accent)}.error{color:var(--error-color,#db4437);overflow-wrap:anywhere}.notice{padding:12px 16px;background:var(--card-background-color,white);border-left:4px solid var(--accent);margin-bottom:16px;border-radius:6px}.actions{display:flex;gap:10px;margin-top:20px}.muted,small{color:var(--secondary-text-color,#64748b)}summary{cursor:pointer;font-weight:600;margin-bottom:18px}.source-list{margin-top:20px;border-top:1px solid var(--divider-color,#ddd);padding-top:14px}.search{max-width:320px}.menu{padding:8px;border:0;font-size:22px}.more{margin-top:10px} @media(max-width:850px){.editor{grid-template-columns:1fr}.preview{position:static}.fields{grid-template-columns:1fr}main{padding:20px 14px 40px}header{padding:12px 14px}.section{padding:16px}h1{font-size:25px}.toolbar>div{width:100%}.search{max-width:none}}
+main{max-width:1180px;margin:auto;padding:28px 24px 60px}h1{font-size:30px;margin:0 0 8px}h2{font-size:19px;margin:0 0 18px}p{color:var(--secondary-text-color,#64748b);line-height:1.55}.toolbar,.row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.toolbar{justify-content:space-between;margin:24px 0}.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}.card,.section{background:var(--card-background-color,white);border:1px solid var(--divider-color,#dde3eb);border-radius:16px;padding:22px}.card h2{margin:12px 0 6px}.card small{overflow-wrap:anywhere}.card .value{font-size:26px;margin:22px 0}.badge{display:inline-block;padding:5px 9px;border-radius:7px;background:var(--secondary-background-color,#edf5fb);font-size:12px;color:var(--accent)}button{font:inherit;cursor:pointer;border-radius:9px;min-height:40px;border:1px solid var(--divider-color,#d7e0e9);padding:9px 14px;background:var(--card-background-color,white);color:var(--primary-text-color,#18283b)}button:hover{filter:brightness(.96)}button.primary{background:var(--accent);color:white;border-color:var(--accent)}button.danger{color:var(--error-color,#db4437)}button:disabled{opacity:.5;cursor:wait}button:focus-visible,input:focus,select:focus{outline:2px solid var(--accent);outline-offset:2px}input,select{width:100%;min-width:0;background:var(--card-background-color,white);color:var(--primary-text-color,#18283b);border:1px solid var(--divider-color,#cbd5e1);border-radius:8px;padding:11px;font:inherit;min-height:44px}label{display:block;min-width:0}label>span{display:block;font-size:13px;font-weight:600;margin:0 0 7px}.fields{display:grid;grid-template-columns:1fr 1fr;gap:16px}.editor{display:grid;grid-template-columns:minmax(0,1fr) 290px;gap:20px;align-items:start}.section{margin-bottom:16px}.preview{position:sticky;top:88px;border-top:4px solid var(--accent)}.preview .result{font-size:28px;overflow-wrap:anywhere;margin:14px 0}.preview small{display:block;overflow-wrap:anywhere}.empty{text-align:center;padding:64px 24px}.empty .symbol{font-size:50px;color:var(--accent)}.error{color:var(--error-color,#db4437);overflow-wrap:anywhere}.notice{padding:12px 16px;background:var(--card-background-color,white);border-left:4px solid var(--accent);margin-bottom:16px;border-radius:6px}.actions{display:flex;gap:10px;margin-top:20px}.muted,small{color:var(--secondary-text-color,#64748b)}summary{cursor:pointer;font-weight:600;margin-bottom:18px}.source-list{margin-top:20px;border-top:1px solid var(--divider-color,#ddd);padding-top:14px}.search{max-width:320px}.menu{padding:8px;border:0;font-size:22px}.more{margin-top:10px} @media(max-width:850px){.editor{grid-template-columns:1fr}.preview{position:static}.fields{grid-template-columns:1fr}main{padding:20px 14px 40px}header{padding:12px 14px}.section{padding:16px}h1{font-size:25px}.toolbar>div{width:100%}.search{max-width:none}}
 `;
 class VisualTemplateBuilderPanel extends HTMLElement {
   constructor() {
@@ -190,7 +200,118 @@ class VisualTemplateBuilderPanel extends HTMLElement {
     for (const [id, label] of options) select.append(element("option", {value: id}, label));
     select.value = value; return select;
   }
-  touch() { this.dirty = true; this.updateSummary(); this.queuePreview(); }
+  entityName(entityId) { return this._hass.states[entityId]?.attributes.friendly_name || entityId; }
+  // Scalar attributes worth reading; presentation metadata is left out.
+  readableAttributes(entityId) {
+    const hidden = ["friendly_name", "icon", "entity_picture", "unit_of_measurement", "device_class", "state_class", "supported_features", "attribution", "assumed_state", "editable", "restored"];
+    const attributes = this._hass.states[entityId]?.attributes || {};
+    return Object.entries(attributes).filter(([key, value]) => !hidden.includes(key) && ["number", "string", "boolean"].includes(typeof value));
+  }
+  liveValue(entityId, attribute = "") {
+    const state = this._hass.states[entityId];
+    if (!state) return this.t("notFound");
+    if (attribute) return attribute in state.attributes ? String(state.attributes[attribute]) : "—";
+    const unit = state.attributes.unit_of_measurement;
+    return `${this.stateLabel(state.state)}${unit ? ` ${unit}` : ""}`;
+  }
+  entityIcon(entityId) {
+    const state = this._hass.states[entityId];
+    if (state && customElements.get("ha-state-icon")) {
+      const icon = element("ha-state-icon"); icon.hass = this._hass; icon.stateObj = state; return icon;
+    }
+    return (this.entityName(entityId) || "?").trim().charAt(0).toUpperCase();
+  }
+  // Ranked entity search over friendly names and IDs; numeric states first for calculations.
+  searchEntities(query, expected) {
+    const words = query.toLowerCase().split(/\s+/).filter(Boolean);
+    const numeric = state => state.state !== "" && !Number.isNaN(Number(state.state));
+    return Object.entries(this._hass.states).map(([id, state]) => {
+      const name = (state.attributes.friendly_name || id).toLowerCase();
+      if (!words.every(word => name.includes(word) || id.includes(word))) return null;
+      let score = 0;
+      if (words.length && (name.startsWith(words[0]) || id.split(".")[1]?.startsWith(words[0]))) score -= 2;
+      if (expected === "number" && !numeric(state)) score += 4;
+      if (expected === "binary" && !["binary_sensor", "switch", "input_boolean", "light", "fan"].includes(id.split(".")[0])) score += 1;
+      return {id, name: state.attributes.friendly_name || id, score};
+    }).filter(Boolean).sort((a, b) => a.score - b.score || a.name.localeCompare(b.name));
+  }
+  // Searchable entity picker: shows a readable chip once an entity is chosen.
+  entityPicker(value, commit, {label = this.t("source"), expected = "any", editing = false, attribute = ""} = {}) {
+    const wrap = element("div", {class: "entity-picker"});
+    if (value && !editing) {
+      const change = this.button(this.t("changeEntity"), () => {
+        const fresh = this.entityPicker(value, commit, {label, expected, attribute, editing: true});
+        wrap.replaceWith(fresh); fresh.querySelector("input").focus();
+      }, "entity-change");
+      change.setAttribute("aria-label", `${this.t("changeEntity")} · ${label}`);
+      const known = Boolean(this._hass.states[value]);
+      const live = element("span", {class: "entity-state"}, this.liveValue(value, attribute)); live._source = {entityId: value, attribute};
+      wrap.append(element("div", {class: `entity-chip${known ? "" : " unknown"}`},
+        element("span", {class: "entity-icon", "aria-hidden": "true"}, known ? this.entityIcon(value) : "!"),
+        element("span", {class: "entity-text"}, element("strong", {}, this.entityName(value)), element("small", {}, value)),
+        live, change));
+      return wrap;
+    }
+    const id = `vtb-picker-${++this.inputCounter}`;
+    const input = element("input", {role: "combobox", autocomplete: "off", spellcheck: "false", "aria-autocomplete": "list", "aria-expanded": "false", "aria-controls": id, placeholder: this.t("sourcePlaceholder"), "aria-label": label});
+    input.value = value || "";
+    const list = element("div", {class: "entity-options", role: "listbox", id, hidden: "", onmousedown: event => event.preventDefault()});
+    let matches = []; let active = 0; let done = false;
+    const finish = (chosen, target = null) => {
+      if (done || !input.isConnected) return;
+      done = true; commit(chosen ?? value ?? "", target);
+    };
+    const highlight = index => {
+      active = index;
+      list.querySelectorAll("[role=option]").forEach((option, i) => {
+        option.setAttribute("aria-selected", String(i === active));
+        if (i === active) { input.setAttribute("aria-activedescendant", option.id); option.scrollIntoView?.({block: "nearest"}); }
+      });
+    };
+    const open = () => {
+      matches = this.searchEntities(input.value, expected);
+      const shown = matches.slice(0, 40);
+      list.replaceChildren(...shown.map((match, index) => {
+        const option = element("div", {class: "entity-option", role: "option", id: `${id}-${index}`, onmousedown: event => { event.preventDefault(); finish(match.id); }},
+          element("span", {class: "entity-icon", "aria-hidden": "true"}, this.entityIcon(match.id)),
+          element("span", {class: "entity-text"}, element("strong", {}, match.name), element("small", {}, match.id)),
+          element("span", {class: "entity-state"}, this.liveValue(match.id)));
+        option.addEventListener("mousemove", () => { if (active !== index) highlight(index); });
+        return option;
+      }));
+      if (!shown.length) list.append(element("p", {class: "entity-hint"}, this.t("noMatches")));
+      else if (matches.length > shown.length) list.append(element("p", {class: "entity-hint"}, this.t("moreMatches").replace("{n}", matches.length - shown.length)));
+      list.hidden = false; input.setAttribute("aria-expanded", "true"); highlight(0);
+    };
+    input.addEventListener("focus", open);
+    input.addEventListener("input", open);
+    input.addEventListener("keydown", event => {
+      if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+        event.preventDefault(); if (list.hidden) open();
+        const count = Math.min(matches.length, 40); if (count) highlight((active + (event.key === "ArrowDown" ? 1 : count - 1)) % count);
+      } else if (event.key === "Enter") {
+        event.preventDefault(); const typed = input.value.trim();
+        finish(matches.some(match => match.id === typed) ? typed : matches[active]?.id ?? typed);
+      } else if (event.key === "Escape") { event.preventDefault(); finish(value || ""); }
+    });
+    input.addEventListener("blur", event => {
+      // Typed IDs are kept even if the entity does not exist yet; partial searches are discarded.
+      const typed = input.value.trim();
+      const exact = matches.find(match => match.name.toLowerCase() === typed.toLowerCase());
+      finish(this._hass.states[typed] || /^[a-z0-9_]+\.[a-z0-9_]+$/.test(typed) || !typed ? typed : exact?.id ?? value ?? "", event.relatedTarget);
+    });
+    wrap.append(input, list);
+    return wrap;
+  }
+  // Re-render one part of the editor, keeping keyboard focus at the same position.
+  redraw(old, build, target = this.shadowRoot.activeElement) {
+    const focusables = root => [...root.querySelectorAll("input,select,button,summary")];
+    const index = target && old.contains(target) ? focusables(old).indexOf(target) : -1;
+    const fresh = build(); old.replaceWith(fresh);
+    if (index >= 0) focusables(fresh)[Math.min(index, focusables(fresh).length - 1)]?.focus();
+    return fresh;
+  }
+  touch() { this.dirty = true; this.updateSummary(); this.updateCopyProperties(); this.queuePreview(); }
   dependencies(node, result = new Set()) { if (node.op === "entity") result.add(node.entity_id); for (const arg of node.args || []) this.dependencies(arg, result); return result; }
   start(item, duplicate = false) {
     if (this.dirty && !confirm(this.t("unsaved"))) return;
@@ -272,10 +393,11 @@ class VisualTemplateBuilderPanel extends HTMLElement {
     }
     form.append(formula);
     const settings = element("details", {class: "section entity-settings"}, element("summary", {}, this.t("settings")));
+    settings.append(element("div", {class: "copy-slot"}));
     const fields = element("div", {class: "fields"}); settings.append(fields);
-    for (const key of ["unit", "icon"]) if (key !== "unit" || d.kind === "number") fields.append(this.field(this.t(key), this.input(d[key], value => { d[key] = value; this.touch(); }, {placeholder: key === "icon" ? "mdi:function-variant" : "kW"})));
+    for (const key of ["unit", "icon"]) if (key !== "unit" || d.kind === "number") fields.append(this.field(this.t(key), this.input(d[key], value => { d[key] = value; this.touch(); }, key === "icon" ? {placeholder: "mdi:function-variant"} : {placeholder: "kW", list: "vtb-units"})));
     if (d.kind !== "text") fields.append(this.field(this.t("device"), this.select(d.device_class || "", [["", this.t("none")], ...(this.metadata[d.kind] || []).map(x => [x, x])], value => { d.device_class = value; this.touch(); })));
-    if (d.kind === "number") fields.append(this.field(this.t("state"), this.select(d.state_class || "", ["", "measurement", "total", "total_increasing"].map(x => [x, x || this.t("none")]), value => {d.state_class = value; this.touch();})));
+    if (d.kind === "number") fields.append(this.field(this.t("state"), this.select(d.state_class || "", ["", "measurement", "total", "total_increasing"].map(x => [x, x ? `${this.t(`state_class_${x}`)} (${x})` : this.t("none")]), value => {d.state_class = value; this.touch();})));
     const policy = this.select(d.missing, ["unavailable", "keep", "fallback"].map(x => [x, this.t(x)]), value => {d.missing = value; if (d.fallback === undefined) d.fallback = d.kind === "binary" ? false : d.kind === "number" ? 0 : ""; this.touch(); this.render(); this.shadowRoot.querySelector(".entity-settings").open = true;});
     fields.append(this.field(this.t("missing"), policy));
     if (d.missing === "fallback") fields.append(this.field(this.t("fallbackValue"), d.kind === "binary" ? this.select(String(d.fallback), [["true", "ON"], ["false", "OFF"]], v => {d.fallback = v === "true"; this.touch();}) : this.input(d.fallback, v => {d.fallback = d.kind === "number" ? (v === "" ? "" : Number(v)) : v; this.touch();}, {type: d.kind === "number" ? "number" : "text", step: "any"})));
@@ -284,9 +406,32 @@ class VisualTemplateBuilderPanel extends HTMLElement {
     this.saveButton = this.button(this.t("save"), () => this.save(), "primary"); this.saveButton.disabled = this.busy;
     form.append(element("div", {class: "actions"}, this.saveButton, this.button(this.t("cancel"), () => this.cancel())));
     this.previewBox = element("aside", {class: "section preview", "aria-live": "polite"}, element("h2", {}, this.t("preview")), element("p", {}, this.t("pending"))); layout.append(this.previewBox);
-    const datalist = element("datalist", {id: "vtb-entities"});
-    for (const [id, state] of Object.entries(this._hass.states).sort((a,b) => (a[1].attributes.friendly_name || a[0]).localeCompare(b[1].attributes.friendly_name || b[0]))) datalist.append(element("option", {value: id}, `${state.attributes.friendly_name || id} · ${state.state}`));
-    main.append(datalist); this.updateMappingLive(); this.queuePreview();
+    const units = new Set(Object.values(this._hass.states).map(state => state.attributes.unit_of_measurement).filter(unit => typeof unit === "string"));
+    main.append(element("datalist", {id: "vtb-units"}, ...[...units].sort().map(unit => element("option", {value: unit}))));
+    this.updateMappingLive(); this.updateCopyProperties(); this.queuePreview();
+  }
+  updateCopyProperties() {
+    const slot = this.shadowRoot.querySelector(".copy-slot");
+    const copy = slot && this.sourceProperties();
+    if (!slot) return;
+    if (!copy) { slot.replaceChildren(); return; }
+    const values = [copy.unit, copy.device_class, copy.state_class && this.t(`state_class_${copy.state_class}`)].filter(Boolean).join(" · ");
+    slot.replaceChildren(element("div", {class: "copy-properties"}, element("span", {}, `${this.t("copyPropsHelp")} `, element("strong", {}, values)),
+      this.button(this.t("copyProps").replace("{name}", this.entityName(copy.entityId)), () => {
+        for (const key of ["unit", "device_class", "state_class"]) if (copy[key]) this.draft[key] = copy[key];
+        this.touch(); this.render(); this.shadowRoot.querySelector(".entity-settings").open = true;
+      })));
+  }
+  // Offer the first source's unit and classes when the sensor has none yet.
+  sourceProperties() {
+    const d = this.draft;
+    if (d.kind !== "number" || d.unit || d.device_class || d.state_class) return null;
+    for (const entityId of this.dependencies(d.expression)) {
+      const attributes = this._hass.states[entityId]?.attributes || {};
+      const copy = {entityId, unit: attributes.unit_of_measurement || "", device_class: (this.metadata.number || []).includes(attributes.device_class) ? attributes.device_class : "", state_class: ["measurement", "total", "total_increasing"].includes(attributes.state_class) ? attributes.state_class : ""};
+      if (copy.unit || copy.device_class || copy.state_class) return copy;
+    }
+    return null;
   }
   stateLabel(state) {
     const key = `state_${state}`;
@@ -310,18 +455,19 @@ class VisualTemplateBuilderPanel extends HTMLElement {
   renderMapping(container) {
     const mapping = this.mapping;
     container.append(element("p", {class: "mapping-intro"}, this.t("mappingHelp")));
-    const source = this.input(mapping.entityId, value => {
-      mapping.entityId = value; this.syncMapping(); this.touch(); this.updateMappingLive();
-    }, {list: "vtb-entities", placeholder: this.t("choose")});
-    source.addEventListener("change", () => {
-      // Only seed an untouched table; changing source never discards user text.
-      if (mapping.rows.length === 1 && !mapping.rows[0].state && !mapping.rows[0].text) {
-        const states = this.suggestedStates(mapping.entityId).slice(0, 10);
-        if (states.length) mapping.rows = states.map(state => ({state, text: this.stateLabel(state)}));
+    const source = this.entityPicker(mapping.entityId, value => {
+      if (value !== mapping.entityId) {
+        mapping.entityId = value;
+        // Only seed an untouched table; changing source never discards user text.
+        if (mapping.rows.length === 1 && !mapping.rows[0].state && !mapping.rows[0].text) {
+          const states = this.suggestedStates(mapping.entityId).slice(0, 10);
+          if (states.length) mapping.rows = states.map(state => ({state, text: this.stateLabel(state)}));
+        }
+        this.syncMapping(); this.touch();
       }
-      this.syncMapping(); this.touch(); this.render();
-    });
-    container.append(this.field(this.t("mappingSource"), source), element("span", {class: "mapping-current"}));
+      this.render();
+    }, {label: this.t("mappingSource")});
+    container.append(element("div", {class: "picker-field"}, element("span", {}, this.t("mappingSource")), source), element("span", {class: "mapping-current"}));
     const suggestions = this.suggestedStates(mapping.entityId);
     mapping.rows.forEach((row, index) => {
       const custom = row.custom || !suggestions.includes(row.state);
@@ -351,7 +497,7 @@ class VisualTemplateBuilderPanel extends HTMLElement {
     if (!this.mapping || this.editorMode !== "mapping") return;
     const state = this._hass.states[this.mapping.entityId];
     const label = this.shadowRoot.querySelector(".mapping-current");
-    if (label) label.textContent = state ? `${state.attributes.friendly_name || this.mapping.entityId} · ${this.t("live")}: ${this.stateLabel(state.state)} (${state.state})` : this.t("chooseSourceFirst");
+    if (label) label.textContent = state ? "" : this.t("chooseSourceFirst");
     for (const row of this.shadowRoot.querySelectorAll(".mapping-row")) row.classList.toggle("active", this.mapping.rows[Number(row.dataset.mappingIndex)]?.state === state?.state);
   }
   inputChoices(expected, current, depth) {
@@ -385,9 +531,12 @@ class VisualTemplateBuilderPanel extends HTMLElement {
     while (args.length < minimum) args.push(constant(op === "near" ? 0.1 : 0));
     node.op = op; node.args = args; this.touch(); this.render();
   }
-  renderNode(node, replace, depth = 0, expected = "any", peer = null) {
+  renderNode(node, replace, depth = 0, expected = "any", peer = null, refresh = null) {
     const kind = expressionKind(node);
     const box = element("div", {class: "expression", "data-operation": node.op});
+    // Comparisons redraw both sides so state suggestions follow the chosen entity.
+    const redrawSelf = target => this.redraw(box, () => this.renderNode(node, replace, depth, expected, peer, refresh), target);
+    const redrawTree = refresh || redrawSelf;
     const chooser = this.select(kind, this.inputChoices(expected, kind, depth), value => {replace(this.newInput(value, node, expected)); this.touch(); this.render();});
     chooser.setAttribute("aria-label", depth === 0 ? this.t("goal") : this.t("inputKind"));
     const leaf = node.op === "entity" || node.op === "value";
@@ -397,16 +546,19 @@ class VisualTemplateBuilderPanel extends HTMLElement {
       const line = element("div", {class: "value-line"});
       if (depth > 0) line.append(chooser); else line.style.gridTemplateColumns = "1fr";
       if (node.op === "entity") {
-        const input = this.input(node.entity_id, value => {node.entity_id = value; this.touch(); this.updateSourceLabels();}, {list: "vtb-entities", placeholder: this.t("sourcePlaceholder"), "aria-label": this.t("source")});
-        line.append(input); control.append(line);
-        const live = element("span", {class: "source-live"}); live._expression = node;
-        const state = this._hass.states[node.entity_id];
-        live.textContent = state ? `${state.attributes.friendly_name || node.entity_id}: ${node.attribute ? JSON.stringify(state.attributes[node.attribute]) : this.stateLabel(state.state)}` : this.t("choose");
-        control.append(live);
-        const attrs = element("details", {class: "attribute-options"}, element("summary", {}, this.t("attributeChoice")));
-        if (node.attribute) attrs.open = true;
-        attrs.append(this.input(node.attribute || "", value => {node.attribute = value; this.touch(); this.updateSourceLabels();}, {placeholder: "current_position", "aria-label": this.t("attribute")}));
-        control.append(attrs);
+        line.append(this.entityPicker(node.entity_id, (value, target) => {
+          const changed = value !== node.entity_id;
+          if (changed) { node.entity_id = value; if (node.attribute && !(node.attribute in (this._hass.states[value]?.attributes || {}))) node.attribute = ""; this.touch(); }
+          redrawTree(target);
+        }, {expected, attribute: node.attribute}));
+        control.append(line);
+        const attributes = this.readableAttributes(node.entity_id);
+        if (node.entity_id && (attributes.length || node.attribute)) {
+          const options = [["", `${this.t("stateValue")} · ${this.liveValue(node.entity_id)}`], ...attributes.map(([key, value]) => [key, `${key.replace(/_/g, " ")} · ${value}`])];
+          if (node.attribute && !attributes.some(([key]) => key === node.attribute)) options.push([node.attribute, node.attribute]);
+          const read = this.select(node.attribute || "", options, value => {node.attribute = value; this.touch(); redrawTree(this.shadowRoot.activeElement);});
+          control.append(element("div", {class: "attribute-line"}, this.field(this.t("readValue"), read, this.t("attribute"))));
+        }
       } else {
         let input;
         const states = expected === "any" && peer?.op === "entity" && !peer.attribute && typeof node.value === "string" ? this.suggestedStates(peer.entity_id) : [];
@@ -454,7 +606,7 @@ class VisualTemplateBuilderPanel extends HTMLElement {
       const operator = this.select(node.op, COMPARE.map(op => [op, this.t(`${op}Word`)]), value => this.changeOperation(node, value));
       operator.className = "compare-operator"; operator.setAttribute("aria-label", this.t("compareLabel"));
       const numeric = !["eq", "ne"].includes(node.op);
-      const line = element("div", {class: "comparison-line"}, this.renderNode(node.args[0], value => {node.args[0] = value;}, depth + 1, numeric ? "number" : "any"), operator, this.renderNode(node.args[1], value => {node.args[1] = value;}, depth + 1, numeric ? "number" : "any", node.args[0]));
+      const line = element("div", {class: "comparison-line"}, this.renderNode(node.args[0], value => {node.args[0] = value;}, depth + 1, numeric ? "number" : "any", null, redrawSelf), operator, this.renderNode(node.args[1], value => {node.args[1] = value;}, depth + 1, numeric ? "number" : "any", node.args[0], redrawSelf));
       box.append(line);
       if (node.op === "near") box.append(element("div", {class: "rule-inline-option"}, element("div", {class: "rule-caption"}, this.t("tolerance")), this.renderNode(node.args[2], value => {node.args[2] = value;}, depth + 1, "number")));
     } else {
@@ -491,7 +643,8 @@ class VisualTemplateBuilderPanel extends HTMLElement {
   }
   updateSourceLabels() {
     for (const list of this.shadowRoot.querySelectorAll(".state-suggestions")) list.replaceChildren(...this.suggestedStates(list._peer.entity_id).map(state => element("option", {value: state}, this.stateLabel(state))));
-    for (const label of this.shadowRoot.querySelectorAll(".source-live")) { const node = label._expression; const state = this._hass.states[node.entity_id]; label.textContent = state ? `${state.attributes.friendly_name || node.entity_id}: ${node.attribute ? JSON.stringify(state.attributes[node.attribute]) : state.state}` : "—"; } }
+    for (const label of this.shadowRoot.querySelectorAll(".entity-state")) if (label._source) label.textContent = this.liveValue(label._source.entityId, label._source.attribute);
+  }
   queuePreview() { clearTimeout(this.timer); const sequence = ++this.sequence; this.timer = setTimeout(() => this.preview(sequence), 300); }
   async preview(sequence) {
     if (!this.draft) return;
